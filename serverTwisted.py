@@ -1,4 +1,4 @@
-import sys, json
+import sys, json, urllib2
 from twisted.internet import reactor
 from twisted.web import server, resource
 from twisted.web.static import File
@@ -38,8 +38,16 @@ class Capteurs(resource.Resource):
         get response method for the Capteurs resource
         localhost:8000/ListValues/
         '''
-        log.msg('The values are: ' + ','.join(str(val) for val in values))
-        return json.dumps(values)
+        
+        headerFile = urllib2.urlopen("header.html")
+        headerHtml = headerFile.read()
+
+        footerFile = urllib2.urlopen("footer.html")
+        footerHtml = footerFile.read()
+        
+        capteurFile = urllib2.urlopen("corps_capteur.html")
+        
+        return header.Html + capteurFile + footerHtml
 
 class Statistique(resource.Resource):
 
@@ -113,13 +121,13 @@ VIEWS = {
 }
 
 if __name__ == '__main__':
-    root = Root()
+    root = File("/home/tommi/INSA/4IF/GHome/ClientPC/") # root of the webserver
     for viewName, className in VIEWS.items():
         #add the view to the web service
         root.putChild(viewName, className)
     log.startLogging(sys.stdout)
     log.msg('Starting server: %s' %str(datetime.now()))
     server = server.Site(root)
-    reactor.listenTCP(8000, server)
+    reactor.listenTCP(5000, server)
     reactor.run()
 
