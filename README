@@ -1,0 +1,2 @@
+Server Rest en Python-Twisted. Recoit des messages JSON du client et les 
+transmet au serveur GHome. 
