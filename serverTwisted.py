@@ -42,6 +42,6 @@ if __name__ == '__main__':
     log.startLogging(sys.stdout)
     log.msg('Starting server: %s' %str(datetime.now()))
     server = server.Site(root)
-    reactor.listenTCP(5000, server) #@UndefinedVariable
+    reactor.listenTCP(80, server) #@UndefinedVariable
     reactor.run() #@UndefinedVariable
 
