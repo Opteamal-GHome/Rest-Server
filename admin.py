@@ -5,6 +5,18 @@ class AdminHTML(resource.Resource):
         '''
         Methode de reponse a localhost:5000/admin
         '''
+        headerFile = open("../ClientPC/header.html")
+        headerHtml = headerFile.read()
+        headerHtml = headerHtml.replace("$STYLE$", "core_admin.css")
+        headerFile.close()      
+        
+        adminFile = open("../ClientPC/core_admin.html")
+        adminHtml = adminFile.read()
+        adminFile.close()
+
+        footerFile = open("../ClientPC/footer.html")
+        footerHtml = footerFile.read()
+        footerFile.close()
         
 
     def render_POST(self, request):
