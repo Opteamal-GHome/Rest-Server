@@ -1,5 +1,6 @@
 from socketGHome import SocketGHome
 from capteurs import Capteur
+from rule import Rule
 
 class TransportGHome():
     '''
@@ -48,3 +49,20 @@ class TransportGHome():
         if typeMessage == 'CAPTEUR':
             if numCapteur == idCapteur :
                 return liste[2]
+                
+                
+    def sendRule(self, regle):
+        '''
+        Envoi d'une regle au serveur C
+        '''
+        SocketGHome.sendMsg(self,regle)
+        
+        
+    def decode(self, msg):
+        '''
+        Trame entrante au format JSON
+        '''
+        if msg['msg'] == "rule":
+            Rule.decodeJSONRule(msg)
+   
+   
