@@ -1,9 +1,11 @@
-import sys, json, urllib2
+import sys, json
 from twisted.internet import reactor
 from twisted.web import server, resource
 from twisted.web.static import File
 from twisted.python import log
 from datetime import datetime
+
+from capteurs import Capteurs
 
 #we will modify the values below using REST
 values = ['1','2','3','4','5']
@@ -14,7 +16,7 @@ class Root(resource.Resource):
     def render_GET(self, request):
         '''
         get response method for the root resource
-        localhost:8000/
+        localhost:5000/
         '''
         return 'Welcome to the REST API'
 
@@ -31,30 +33,12 @@ class Root(resource.Resource):
             else:
                 return PageNotFoundError()
 
-class Capteurs(resource.Resource):
-
-    def render_GET(self, request):
-        '''
-        get response method for the Capteurs resource
-        localhost:8000/ListValues/
-        '''
-        
-        headerFile = urllib2.urlopen("header.html")
-        headerHtml = headerFile.read()
-
-        footerFile = urllib2.urlopen("footer.html")
-        footerHtml = footerFile.read()
-        
-        capteurFile = urllib2.urlopen("corps_capteur.html")
-        
-        return header.Html + capteurFile + footerHtml
-
 class Statistique(resource.Resource):
 
     def render_GET(self, request):
         '''
         get response method for the Statistique resource
-        localhost:8000/AddValue/
+        localhost:8000/statistique/
         '''
         try:
             values.append(request.args['name'][0])
@@ -74,7 +58,7 @@ class Admin(resource.Resource):
     def render_GET(self, request):
         '''
         get response method for the Admin resource
-        localhost:8000/DeleteValue/
+        localhost:8000/admin/
         '''
         try:
             log.msg('Admin: %s' %(request.args['name'][0]))
@@ -89,31 +73,13 @@ class Admin(resource.Resource):
         '''to make sure both GET/POST are handled'''
         return self.render_GET(request)
 
-class ClearValues(resource.Resource):
-
-    def render_GET(self, request):
-        '''
-        get response method for the ClearValues resource
-        localhost:8000/ClearValues/
-        '''
-        try:
-            log.msg('Clearing values')
-            values = list()
-            return json.dumps(values)
-        except:
-            log.err()
-            return 'Error clearing values'
-
-    def render_POST(self, request):
-        '''to make sure both GET/POST are handled'''
-        return self.render_GET(request)
-
 class PageNotFoundError(resource.Resource):
 
     def render_GET(self, request):
         return 'Page Not Found!'
 
-#to make the process of adding new views less static
+
+# List of views the server can distribute
 VIEWS = {
     'capteurs': Capteurs(),
     'stat': Statistique(),
@@ -128,6 +94,6 @@ if __name__ == '__main__':
     log.startLogging(sys.stdout)
     log.msg('Starting server: %s' %str(datetime.now()))
     server = server.Site(root)
-    reactor.listenTCP(5000, server)
-    reactor.run()
+    reactor.listenTCP(5000, server) #@UndefinedVariable
+    reactor.run() #@UndefinedVariable
 
