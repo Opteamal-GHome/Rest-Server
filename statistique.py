@@ -12,4 +12,6 @@ class StatistiqueHTML():
     
     
 class Statistique():
-    
+    '''
+    Classe Statistique
+    '''

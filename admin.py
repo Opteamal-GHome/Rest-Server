@@ -14,4 +14,6 @@ class AdminHTML():
     
     
 class Admin():
-    
+    '''
+    Classe Admin
+    '''

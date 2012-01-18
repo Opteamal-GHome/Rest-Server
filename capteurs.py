@@ -82,9 +82,7 @@ class CapteursFactory():
         messageRecu = SocketGHome.receiveMsg(self)
         
         liste = messageRecu.split(',')
-        
-        
-        
+                
         
         
 class Capteur():

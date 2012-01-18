@@ -10,7 +10,7 @@ class SocketGHome :
         self.port = 12800
         self.connexionServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connexionServer.connect((self.hote, self.port))
-        print("Connexion établie avec le serveur sur le port {}".format(self.port))
+        print("Connexion etablie avec le serveur sur le port {}".format(self.port))
     
     def sendMsg (self, message):
         message = message.encode()
