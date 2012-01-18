@@ -47,7 +47,7 @@ class TransportGHome():
         numCapteur = liste[1]
         
         if typeMessage == 'CAPTEUR':
-            if numCapteur == idCapteur :
+            if numCapteur == idCapteur:
                 return liste[2]
                 
                 

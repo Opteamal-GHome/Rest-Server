@@ -8,7 +8,7 @@ class SocketGHome :
     
     def __init__(self) :
         self.hote = "localhost"
-        self.port = 12800
+        self.port = 80
         self.connexionServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connexionServer.connect((self.hote, self.port))
         print("Connexion etablie avec le serveur sur le port {}".format(self.port))
