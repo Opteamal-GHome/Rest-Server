@@ -5,7 +5,7 @@ from twisted.web.static import File
 from twisted.python import log
 from datetime import datetime
 
-from capteurs import Capteurs
+from capteurs import Capteurs, CapteursHTML
 
 #we will modify the values below using REST
 values = ['1','2','3','4','5']
@@ -81,7 +81,7 @@ class PageNotFoundError(resource.Resource):
 
 # List of views the server can distribute
 VIEWS = {
-    'capteurs': Capteurs(),
+    'capteurs': CapteursHTML(),
     'stat': Statistique(),
     'admin': Admin()
 }
