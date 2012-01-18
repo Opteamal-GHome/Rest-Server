@@ -69,6 +69,7 @@ class CapteursFactory():
         '''
         Retourne le nombre de capteurs enregistres au niveau du serveur
         '''
+        return len(self.capteurs)
 
         
     def getCapteurs(self):
