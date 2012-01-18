@@ -5,7 +5,9 @@ from twisted.web.static import File
 from twisted.python import log
 from datetime import datetime
 
-from capteurs import Capteurs, CapteursHTML
+from capteurs import CapteursHTML
+from admin import AdminHTML
+from statistique import StatistiqueHTML
 
 #we will modify the values below using REST
 values = ['1','2','3','4','5']
@@ -52,26 +54,7 @@ class Statistique(resource.Resource):
         def render_POST(self, request):
             '''to make sure both GET/POST are handled'''
             return self.render_GET(request)
-
-class Admin(resource.Resource):
-
-    def render_GET(self, request):
-        '''
-        get response method for the Admin resource
-        localhost:8000/admin/
-        '''
-        try:
-            log.msg('Admin: %s' %(request.args['name'][0]))
-            values.remove(request.args['name'][0])
-            log.msg('Current values:%s' %(','.join(str(val) for val in values)))
-            return json.dumps(values)
-        except:
-            log.err()
-            return 'Error deleting value: %s' %(request.args['name'][0])
-
-    def render_POST(self, request):
-        '''to make sure both GET/POST are handled'''
-        return self.render_GET(request)
+   
 
 class PageNotFoundError(resource.Resource):
 
@@ -82,8 +65,8 @@ class PageNotFoundError(resource.Resource):
 # List of views the server can distribute
 VIEWS = {
     'capteurs': CapteursHTML(),
-    'stat': Statistique(),
-    'admin': Admin()
+    'stat': StatistiqueHTML(),
+    'admin': AdminHTML()
 }
 
 if __name__ == '__main__':
