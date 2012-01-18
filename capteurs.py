@@ -32,7 +32,7 @@ class CapteursHTML():
 
 
 
-class Capteurs():
+class CapteursFactory():
     '''
     Cette classe gere un ensemble de capteurs enregistres dans le systeme
     '''
@@ -47,6 +47,16 @@ class Capteurs():
         '''
         Ajout d'un capteur
         '''
+        # On recherche dans le tableau des capteurs si on a un capteur qui a le meme ID
+        trouve = False
+        for capt in self.capteurs :
+            if capt.id == capteur[id]:
+                trouve = True
+                break
+        
+        # Si nous n'avons pas trouve de capteurs avec la meme cle, c'est que le capteur n'existe pas dans la liste des capteurs
+        if trouve == False :
+            self.capteurs[capteur.id] = capteur
         
         
     def supprimerCapteur(self,capteur):
@@ -71,3 +81,23 @@ class Capteurs():
         messageRecu = SocketGHome.receiveMsg(self)
         
         liste = messageRecu.split(',')
+        
+        
+        
+        
+        
+class Capteur():
+    '''
+    Classe Capteur
+    '''
+    
+    def __init__(self):
+        # ID du capteur
+        self.id = ""        
+        # Nom du capteur
+        self.nom = ""
+        # Type du capteur
+        self.type = ""
+        # Donnee (temperature, luminosite, etc.) du capteur
+        self.data = ""
+    

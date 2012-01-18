@@ -1,4 +1,4 @@
-import sys, json
+import sys
 from twisted.internet import reactor
 from twisted.web import server, resource
 from twisted.web.static import File
@@ -9,10 +9,7 @@ from capteurs import CapteursHTML
 from admin import AdminHTML
 from statistique import StatistiqueHTML
 
-#we will modify the values below using REST
-values = ['1','2','3','4','5']
-
-#main server resource
+# Main Serveur
 class Root(resource.Resource):
 
     def render_GET(self, request):
@@ -34,27 +31,7 @@ class Root(resource.Resource):
                 return resource.Resource.getChild(self, name, request)
             else:
                 return PageNotFoundError()
-
-class Statistique(resource.Resource):
-
-    def render_GET(self, request):
-        '''
-        get response method for the Statistique resource
-        localhost:8000/statistique/
-        '''
-        try:
-            values.append(request.args['name'][0])
-            log.msg('Value added: %s' %(request.args['name'][0]))
-            log.msg('Current values:%s' %(','.join(str(val) for val in values)))
-            return json.dumps(values)
-        except:
-            log.err()
-            return 'Error statisting: %s' %(request.args['name'][0])
-
-        def render_POST(self, request):
-            '''to make sure both GET/POST are handled'''
-            return self.render_GET(request)
-   
+              
 
 class PageNotFoundError(resource.Resource):
 
