@@ -1,4 +1,6 @@
-class AdminHTML():
+from twisted.web import resource
+
+class AdminHTML(resource.Resource):
     def render_GET(self, request):
         '''
         Methode de reponse a localhost:5000/admin

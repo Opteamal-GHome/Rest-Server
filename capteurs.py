@@ -1,7 +1,7 @@
-from socketGHome import SocketGHome
+from twisted.web import resource
+import cgi
 
-
-class CapteursHTML():
+class CapteursHTML(resource.Resource):
     '''
     Classe Capteurs. Est appele lorsque l'utilisateur souhaite la liste des capteurs present
     '''
@@ -11,11 +11,14 @@ class CapteursHTML():
         Methode de reponse pour localhost:8000/capteurs/
         '''
         
+        print("passe")
+        
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
+        headerHtml = headerHtml.replace("$STYLE$", "core_capteurs.css")
         headerFile.close()      
-          
-        capteurFile = open("../ClientPC/corps_capteur.html")
+        
+        capteurFile = open("../ClientPC/core_capteurs.html")
         capteurHtml = capteurFile.read()
         capteurFile.close()
 
@@ -28,7 +31,11 @@ class CapteursHTML():
     def render_POST(self, request):
         return self.render_GET(request)
 
-
+    def renderCorpsHTML (self):
+        '''
+        Modification de la page corps_capteurs pour ajouter les capteurs dans les box
+        '''
+        
 
 
 
@@ -39,31 +46,28 @@ class CapteursFactory():
     
     def __init__(self):
         ''' Methode Initialisation de la classe '''
-        self.capteurs={}
+        capteur1 = Capteur(1, 'Salon', 'T', 15)
+        capteur2 = Capteur(2, 'Chambre', 'P', 35)
+        self.capteurs=[capteur1, capteur2]
         
         
     
     def ajouterCapteur(self, capteur):
         '''
         Ajout d'un capteur
+        '''        
+        if capteur.id not in self.getIDCapteurs():
+            self.capteurs.append(capteur)
+        
+        
+    def supprimerCapteur(self, idC):
         '''
-        # On recherche dans le tableau des capteurs si on a un capteur qui a le meme ID
-        trouve = False
-        for capt in self.capteurs :
-            if capt.id == capteur[id]:
-                trouve = True
-                break
-        
-        # Si nous n'avons pas trouve de capteurs avec la meme cle, c'est que le capteur n'existe pas dans la liste des capteurs
-        if trouve == False :
-            self.capteurs[capteur.id] = capteur
-        
-        
-    def supprimerCapteur(self,capteur):
+        Suppression du capteur dont l'id est passe en parametre
         '''
-        Suppression du capteur passe en parametre
-        '''
-        
+        for capteur in self.capteurs :
+            if capteur.id == idC:
+                self.capteurs.remove(capteur)
+            
     
     def nbCapteurs(self):
         '''
@@ -71,18 +75,15 @@ class CapteursFactory():
         '''
         return len(self.capteurs)
 
-        
-    def getCapteurs(self):
-        '''
-        Demande de la liste des capteurs a l'application Serveur
-        Envoi par socket du message et attente de la liste
-        '''
-        message = 'INFO,00'
-        SocketGHome.sendMsg(self, message)
-        messageRecu = SocketGHome.receiveMsg(self)
-        
-        liste = messageRecu.split(',')
                 
+    def getIDCapteurs(self):
+        '''
+        Renvoie la liste de tous les ID des capteurs presents sur le serveur Rest
+        ''' 
+        liste = []  
+        for capteur in self.capteurs:
+            liste.append(capteur.id)
+        return liste
         
         
 class Capteur():
@@ -90,13 +91,14 @@ class Capteur():
     Classe Capteur
     '''
     
-    def __init__(self):
+    def __init__(self, idC = "", nom = "", typeC = "", data = ""):
         # ID du capteur
-        self.id = ""        
+        self.id = idC       
         # Nom du capteur
-        self.nom = ""
+        self.nom = nom
         # Type du capteur
-        self.type = ""
+        self.type = typeC
         # Donnee (temperature, luminosite, etc.) du capteur
-        self.data = ""
+        self.data = data
+        
     
