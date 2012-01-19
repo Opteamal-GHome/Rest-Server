@@ -37,4 +37,14 @@ class TransportGHome():
         '''
         Demande des informations d'un capteur dont l'id est passe en parametre
         '''
+        message = 'INFO,' + idCapteur
+        SocketGHome.sendMsg(self, message)
+        messageRecu = SocketGHome.receiveMsg(self)
         
+        liste = messageRecu.split(',')
+        typeMessage = liste[0]
+        numCapteur = liste[1]
+        
+        if typeMessage == 'CAPTEUR':
+            if numCapteur == idCapteur :
+                return liste[2]

@@ -68,7 +68,8 @@ class CapteursFactory():
         ''' Methode Initialisation de la classe '''
         capteur1 = Capteur(1, 'Salon', 'T', 15)
         capteur2 = Capteur(2, 'Chambre', 'P', 35)
-        self.capteurs=[capteur1, capteur2]
+        capteur3 = Capteur(3, 'Salle de bain', 'T', 20)
+        self.capteurs=[capteur1, capteur2, capteur3]
         
         
     
