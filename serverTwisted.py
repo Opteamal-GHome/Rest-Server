@@ -5,7 +5,7 @@ from twisted.web.static import File
 from twisted.python import log
 from datetime import datetime
 
-from capteurs import CapteursHTML
+from capteurs import CapteursHTML, CapteursFactory
 from admin import AdminHTML
 from statistique import StatistiqueHTML
 
@@ -18,20 +18,7 @@ class Root(resource.Resource):
         localhost:5000/
         '''
         return 'Welcome to the REST API'
-
-    def getChild(self, name, request):
-        '''
-        We overrite the get child function so that we can handle invalid
-        requests
-        '''
-        if name == '':
-            return self
-        else:
-            if name in VIEWS.keys():
-                return resource.Resource.getChild(self, name, request)
-            else:
-                return PageNotFoundError()
-              
+             
 
 class PageNotFoundError(resource.Resource):
 
@@ -39,18 +26,19 @@ class PageNotFoundError(resource.Resource):
         return 'Page Not Found!'
 
 
-# List of views the server can distribute
-VIEWS = {
-    'capteurs': CapteursHTML(),
-    'stat': StatistiqueHTML(),
-    'admin': AdminHTML()
-}
 
 if __name__ == '__main__':
-    root = File("/home/tommi/INSA/4IF/GHome/ClientPC/") # root of the webserver
-    for viewName, className in VIEWS.items():
-        #add the view to the web service
-        root.putChild(viewName, className)
+    root = File("/home/tommi/INSA/4IF/GHome/ClientPC/") 
+    capteursFactory = CapteursFactory()
+    
+    root.putChild('', CapteursHTML(capteursFactory))
+    root.putChild('capteurs', CapteursHTML(capteursFactory))
+    root.putChild('stat', StatistiqueHTML())
+    root.putChild('admin', AdminHTML())
+
+        
+
+        
     log.startLogging(sys.stdout)
     log.msg('Starting server: %s' %str(datetime.now()))
     server = server.Site(root)

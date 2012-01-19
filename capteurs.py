@@ -1,10 +1,13 @@
 from twisted.web import resource
-import cgi
 
 class CapteursHTML(resource.Resource):
     '''
     Classe Capteurs. Est appele lorsque l'utilisateur souhaite la liste des capteurs present
     '''
+    
+    def __init__(self, capteurFactory):
+        self.factory = capteurFactory
+        
 
     def render_GET(self, request):
         '''
@@ -20,6 +23,7 @@ class CapteursHTML(resource.Resource):
         
         capteurFile = open("../ClientPC/core_capteurs.html")
         capteurHtml = capteurFile.read()
+        capteurHtml = capteurHtml.replace("$LISTECAPTEURS$", self.renderCorpsHTML())
         capteurFile.close()
 
         footerFile = open("../ClientPC/footer.html")
@@ -35,8 +39,24 @@ class CapteursHTML(resource.Resource):
         '''
         Modification de la page corps_capteurs pour ajouter les capteurs dans les box
         '''
-        
+        page = ""
+        for capteur in self.factory.capteurs:
+            # Nom du capteur
+            page +=  """<div class="capteur">
+            <div class="nom_capteur">""" + str(capteur.nom) + """</div>"""
+            
+            # Image du capteur
+            if capteur.type == 'T':
+                page += """<img class="img_capteur" src="Thermometer_1_24282.png"> """
+            elif capteur.type == 'P':
+                page += """<img class="img_capteur" src="bulb.png">"""
+                
+            # Valeur Data du capteur
+            page += """<div class="val_capteur">""" + str(capteur.data) + """</div>"""              
+            page += """</div>"""
 
+
+        return page
 
 
 class CapteursFactory():
