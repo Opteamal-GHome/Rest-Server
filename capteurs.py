@@ -89,6 +89,14 @@ class CapteursFactory():
             if capteur.id == idC:
                 self.capteurs.remove(capteur)
             
+    def modifierCapteur(self, idC, dataC):
+        '''
+        Modifie la valeur du capteur identifie par un id et une donnee
+        '''
+        for capteur in self.capteurs :
+            if capteur.id == idC:
+                capteur.data = dataC
+        
     
     def nbCapteurs(self):
         '''
