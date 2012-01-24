@@ -4,15 +4,82 @@ import netifaces as ni
 class AdminHTML(resource.Resource):
     
     def __init__(self,capteursFactory, actionneursFactory):
+        resource.Resource.__init__(self)
         self.captFactory = capteursFactory
-        self.actionFactory = actionneursFactory
+        self.actionFactory = actionneursFactory 
+        self.putChild('createRule', CreateRule(self.captFactory, self.actionFactory))
+        #self.putChild('groups', Groups())
+        #self.putChild('rules', Rules())
         
     
     def render_GET(self, request):
         '''
         Methode de reponse a localhost:5000/admin
-        '''
+        '''    
+        index = PageIndex(self.captFactory, self.actionFactory)
+        return index.renderIndexAdmin()
         
+            
+    def getChild(self, path, request):
+        return ""
+        
+        
+    def render_POST(self, request):
+        return self.render_GET(request)
+        
+        
+    
+   
+
+     
+        
+class CreateRule(resource.Resource):
+    '''
+    Classe appelee pour admin/createrule
+    '''
+
+    def __init__(self,capteursFactory, actionneursFactory):
+        resource.Resource.__init__(self)
+        self.capteursFactory = capteursFactory
+        self.actionneursFactory = actionneursFactory
+        
+    def render_GET(self, request):
+        '''
+        Methode de reponse a localhost:5000/admin/createrule
+        Cree un objet de type PageIndex et renvoie la page principale
+        '''       
+        index = PageIndex(self.capteursFactory, self.actionneursFactory)
+        return index.renderIndexAdmin()
+        
+            
+    def getChild(self, path, request):
+        return ""
+        
+        
+    def render_POST(self, request):
+        return self.render_GET(request)
+        
+        
+        
+        
+
+
+class PageIndex(resource.Resource):
+    '''
+    Page Index
+    '''
+
+    def __init__(self,capteursFactory, actionneursFactory):
+        self.captFactory = capteursFactory
+        self.actionFactory = actionneursFactory 
+        resource.Resource.__init__(self)
+        
+
+    def renderIndexAdmin(self):
+        '''
+        Creation de la page admin - Index 
+        /admin
+        '''
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
         headerHtml = headerHtml.replace("$STYLE$", "core_admin.css")
@@ -20,7 +87,7 @@ class AdminHTML(resource.Resource):
         
         adminFile = open("../ClientPC/core_admin.html")
         adminHtml = adminFile.read()
-        adminHtml = adminHtml.replace("$IPSERVEUR$", str(ni.ifaddresses('eth0')[2][0]['addr'])+":8080")
+        adminHtml = adminHtml.replace("$IPSERVEUR$", str(ni.ifaddresses('wlan0')[2][0]['addr'])+":8080")
         adminHtml = adminHtml.replace("$LISTECAPTEURS$", self.renderListeCapteursExistants())
         adminHtml = adminHtml.replace("$LISTEACTIONNEURS$", self.renderListeActionneursExistants())
         adminFile.close()
@@ -30,10 +97,7 @@ class AdminHTML(resource.Resource):
         footerFile.close()
         
         return headerHtml + adminHtml + footerHtml
-        
-        
-    def render_POST(self, request):
-        return self.render_GET(request)
+    
     
     def renderListeCapteursExistants(self):
         '''
@@ -91,3 +155,5 @@ class AdminHTML(resource.Resource):
             
 
         return page
+    
+        
