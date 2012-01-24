@@ -6,16 +6,18 @@ class CapteursHTML(resource.Resource):
     '''
     
     def __init__(self, capteurFactory, actionneurFactory, transport):
+        resource.Resource.__init__(self)
         self.factoryCapteurs = capteurFactory
         self.factoryActionneurs = actionneurFactory
         self.transport = transport
-        
+        self.putChild('alldevices', AllDevices())
+       
 
     def render_GET(self, request):
         '''
         Methode de reponse pour localhost:8000/capteurs/
         '''
-        self.transport.getAllDevices(self.factoryCapteurs, self.factoryActionneurs)
+        # self.transport.getAllDevices(self.factoryCapteurs, self.factoryActionneurs)
         
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
@@ -53,7 +55,7 @@ class CapteursHTML(resource.Resource):
                 page += """<img class="img_capteur" src="bulb.png">"""
                 
             # Valeur Data du capteur
-            page += """<div class="val_capteur">""" + str(capteur.data) + """</div>"""              
+            page += """<div class="val_capteur">""" + str(capteur.data[-1]) + """</div>"""              
             page += """</div>"""
 
 
@@ -80,7 +82,7 @@ class CapteursFactory():
         '''        
         if capteur.id not in self.getIDCapteurs():
             self.capteurs.append(capteur)
-        else 
+        else:
             modifierCapteur(capteur.id, capteur.data)
         
         
@@ -98,7 +100,7 @@ class CapteursFactory():
         '''
         for capteur in self.capteurs :
             if capteur.id == idC:
-                capteur.data = dataC
+                capteur.data.append(dataC)
         
     
     def nbCapteurs(self):
@@ -133,3 +135,16 @@ class Capteur():
         # Donnee (temperature, luminosite, etc.) du capteur
         self.data = []
         self.data.append(data)
+        
+           
+           
+class AllDevices(resource.Resource):
+    '''
+    Accessible depuis capteurs/alldevices
+    Retourne un message JSON avec tous les capteurs et tous les actionneurs
+    '''
+    def __init__(self):
+        resource.Resource.__init__(self)
+
+    def render_GET(self, request):
+	    return "essai"
