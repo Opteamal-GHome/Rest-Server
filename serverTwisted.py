@@ -30,23 +30,23 @@ class PageNotFoundError(resource.Resource):
         return 'Page Not Found!'
 
 
-
 if __name__ == '__main__':
     root = File("/home/tommi/INSA/4IF/GHome/ClientPC/") 
-    
+        
     # Objets requis par le serveur
     capteursFactory = CapteursFactory()
     actionneursFactory = ActionneursFactory()
     ensembleRules = Rules()
     
-    transport = TransportGHome()
+    # transport = TransportGHome()
+    transport = 2
     
     # Initialisation de l'envoi des pages HTML
     root.putChild('', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('capteurs', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('stat', StatistiqueHTML())
     root.putChild('admin', AdminHTML(capteursFactory, actionneursFactory))
-    root.putChild('form', Form(ensembleRules, transport))
+    root.putChild('form', Form(ensembleRules, transport))    
     
     log.startLogging(sys.stdout)
     log.msg('Starting server: %s' %str(datetime.now()))
