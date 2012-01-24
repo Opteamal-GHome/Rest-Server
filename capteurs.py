@@ -80,6 +80,8 @@ class CapteursFactory():
         '''        
         if capteur.id not in self.getIDCapteurs():
             self.capteurs.append(capteur)
+        else 
+            modifierCapteur(capteur.id, capteur.data)
         
         
     def supprimerCapteur(self, idC):
