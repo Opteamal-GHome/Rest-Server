@@ -1,12 +1,14 @@
-from twisted.web import resource
+from twisted.web import resource, server, http
 import simplejson as json
 from rule import Rule
 
 class Form (resource.Resource):
     
     def __init__(self,ensRules, transport):
+        resource.Resource.__init__(self)
         self.ensembleRules = ensRules
         self.transport = transport
+
     
     def render_GET(self, request):
         '''
@@ -16,16 +18,19 @@ class Form (resource.Resource):
         print "recu requete"
         
         # On recupere le json de la requete POST
-        datapost = request.content.getvalue()
-        data = json.loads(datapost)
+        #datapost = request.content.getvalue()
+        #data = json.loads(datapost)
         
         # On envoie le tableau a une methode de decodage
-        self.decode(data)
+        #self.decode(data)
                 
         return "";
     
     def render_POST(self, request):
         return self.render_GET(request)
+        
+    def getChild(self, path, request):
+        return "Halleluia"
     
     def decode(self, data):
         '''
@@ -47,9 +52,10 @@ class Form (resource.Resource):
             jsonMsg = jsonMsg.replace('"value": u', '"value": ');
             
             print jsonMsg
-            self.transport.sendRule(jsonMsg)
+            # self.transport.sendRule(jsonMsg)
             
         elif (data["type"] == "supprRule"):
             # Suppression d'une regle
             nomRule = data["ruleName"]
             self.ensembleRules.supprimerRule(nomRule)
+            
