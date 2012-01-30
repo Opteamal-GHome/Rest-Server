@@ -1,10 +1,9 @@
-from xml.dom.minidom import Document
-import json
+from socketGHome import *
 
 class Rule():
 
 
-    def __init__(self, transport):
+    def __init__(self):
         '''
         Initialisation des Rules 
         '''
@@ -14,9 +13,6 @@ class Rule():
         self.name=""
         self.priority=""
         
-        # Transport
-        self.transport = transport
-        
         
     def decodeJSONRule(self, msg):
         print('decode')
@@ -25,15 +21,15 @@ class Rule():
         self.name = msg['ruleName']
     
         # Extraction des conditions      
-        for conditionMsg in msg['condition']:
+        for conditionMsg in msg['conditions']:
             # Si la condition est une date
-            if conditionMsg.getType()[4:8] == "date":
-                condition = ConditionDate(conditionMsg.getType()[0:3], conditionMsg.getDate())
+            if conditionMsg.type[4:8] == "date":
+                condition = ConditionDate(conditionMsg.type[0:3], conditionMsg.date)
             
             else :
-                leftOp = conditionMsg.getLeftOp()
-                rightOp = conditionMsg.getRightOp()
-                typeC = conditionMsg.getType()
+                leftOp = conditionMsg.leftOp
+                rightOp = conditionMsg.rightOp
+                typeC = conditionMsg.type
           
                 condition = Condition(leftOp, typeC, rightOp)
                 
@@ -41,12 +37,12 @@ class Rule():
             
         # Extraction des actions
         for actionMsg in msg['actions']:
-            levier = actionMsg.getLevier()
-            valeur = actionMsg.getValue()
+            levier = actionMsg.actuator
+            valeur = actionMsg.value
             
             action = Action(levier,valeur)
             self.actions.append(action)
-        
+                    
     def createJsonRule(self):
         '''
         Cree une chaine de caractere correspondant a une regle au format JSON (envoi au serveur GHome)
@@ -54,31 +50,35 @@ class Rule():
         # Creation de la structure de depart du message JSON
         data = {}
         data["msgType"] = "newRule"
+        data["priority"] = self.priority
         
-        data['rule'] = {}
+        data["rule"] = {}
         data["rule"]["ruleName"] = self.name
-        
+                
         # Ajout des conditions
-        data['rule']['conditions'] = []
+        data["rule"]["conditions"] = []
         for condition in self.conditions:
-            data["rule"]["conditions"].append(condition)
+            data["rule"]["conditions"].append(condition.encodeJSON())
             
         # Ajout des actions
-        data['rule']['actions'] = []
+        data["rule"]["actions"] = []
         for action in self.actions:
-            data["rule"]["actions"].append(action)
-            
-        #print(data['rule']['conditions'][0].encodeJSON())
+            data["rule"]["actions"].append(action.encodeJSON())
+        
+        # Remplacement des ' par des "
+        jsonRule = str(data)
+        jsonRule = jsonRule.replace('\'','\"')
+        
             
         # Transformation au format JSON et retour
-        #return json.dumps(data)
-        
+        return jsonRule
+    
         
     def sendRule(self, ruleJson):
         '''
         Envoi d'une regle sur le socket GHome
         '''
-        self.transport.sendRule(ruleJson)
+        SocketGHome.sendRule(ruleJson)
             
         
     
@@ -109,11 +109,8 @@ class Action():
         # Valeur du levier
         self.value = valeur
         
-    def getLevier(self):
-        return self.actuator
-        
-    def getValue(self):
-        return self.value
+    def encodeJSON (self):
+        return {'actuator':self.actuator, 'value':self.value}
 
     
 class Condition():
@@ -129,18 +126,9 @@ class Condition():
         # Operande de droite
         self.rightOp = rightOp
         
-    def getType(self):
-        return self.type
-        
-    def getLeftOp(self):
-        return self.leftOp
-        
-    def getRightOp(self):
-        return self.rightOp
-        
     def encodeJSON (self):
-        return [ { 'type':self.type, 'leftOp':self.leftOp, 'rightOp':self.rightOp } ]
-        
+        return {'type':self.type, 'leftOp':self.leftOp, 'rightOp':self.rightOp}
+            
         
 class ConditionDate(Condition):
     '''
@@ -153,9 +141,6 @@ class ConditionDate(Condition):
         # Date de la condition
         self.date = date
         
-    def getDate(self):
-        return self.date
-        
     def encodeJSON (self):
-        return [ { 'type':self.type, 'date':self.date } ]
+        return {'type':self.type, 'date':self.date}
 
