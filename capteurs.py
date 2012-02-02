@@ -78,6 +78,13 @@ class CapteursFactory():
         #self.capteurs = []
         
         
+    def getCapteur (self, idC):
+        ''' 
+        Retourne le capteur designe par l'idC en parametre
+        '''
+        for capteur in self.capteurs:
+            if (capteur.id == idC):
+                return capteur
     
     def ajouterCapteur(self, capteur):
         '''
