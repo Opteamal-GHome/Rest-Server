@@ -9,7 +9,7 @@ from datetime import datetime
 from rule import Rules
 from actionneurs import ActionneursFactory
 from capteurs import CapteursHTML, CapteursFactory
-from admin import AdminHTML
+from admin import *
 from statistique import StatistiqueHTML
 from socketDonneeGHome import *
 from form import WebSocketForm
@@ -48,13 +48,14 @@ if __name__ == '__main__':
     root.putChild('capteurs', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('stat', StatistiqueHTML())
     root.putChild('temperature', StatistiqueHTML())
-    root.putChild('admin', AdminHTML(capteursFactory, actionneursFactory))
-    root.putChild('create_rule', AdminHTML(capteursFactory, actionneursFactory))
+    root.putChild('create_rule', CreateRule(capteursFactory, actionneursFactory, ensembleRules))
+    root.putChild('rules', DisplayRules(capteursFactory, actionneursFactory, ensembleRules))
+    root.putChild('groups', Groups(capteursFactory, actionneursFactory, ensembleRules))
     
     log.startLogging(sys.stdout)
     log.msg('Starting server: %s' %str(datetime.now()))
 
     
     # Serveur Web
-    reactor.listenTCP(constantes.portServeurWeb, server) #@UndefinedVariable
+    reactor.listenTCP(421, server) #@UndefinedVariable
     reactor.run() #@UndefinedVariable
