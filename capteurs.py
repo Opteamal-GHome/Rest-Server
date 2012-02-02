@@ -129,5 +129,3 @@ class Capteur():
         self.type = typeC
         # Donnee (temperature, luminosite, etc.) du capteur
         self.data = data
-        
-    

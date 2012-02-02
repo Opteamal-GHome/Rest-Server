@@ -87,6 +87,14 @@ class Rules() :
     def ajouterRule (self, rule):
         self.rules.append(rule);
         
+    def supprimerRule(self, nomRule):
+        '''
+        Supprimer une regle parmi la liste de regles. La regle supprimee est identifiee par son nom
+        '''
+        for rule in self.rules:
+            if rule.name == nomRule:
+                self.rules.remove(rule)
+        
 
 
 class Action():
