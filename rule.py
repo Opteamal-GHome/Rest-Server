@@ -1,9 +1,7 @@
-from socketGHome import *
-
 class Rule():
 
 
-    def __init__(self):
+    def __init__(self, data):
         '''
         Initialisation des Rules 
         '''
@@ -12,6 +10,7 @@ class Rule():
         self.actions = []
         self.name=""
         self.priority=""
+        self.decodeJSONRule(data)
         
         
     def decodeJSONRule(self, msg):
@@ -71,15 +70,7 @@ class Rule():
         
             
         # Transformation au format JSON et retour
-        return jsonRule
-    
-        
-    def sendRule(self, ruleJson):
-        '''
-        Envoi d'une regle sur le socket GHome
-        '''
-        SocketGHome.sendRule(ruleJson)
-            
+        return jsonRule          
         
     
 class Rules() :
