@@ -11,12 +11,17 @@ from autobahn.websocket import WebSocketServerFactory, WebSocketServerProtocol, 
 
 
 class WebSocketForm (WebSocketServerProtocol):
+
+    def __init__(self, ensRules):
+        self.ensembleRules = ensRules
+    
     
     def onMessage(self, msg, binary):
         print 'reception'
         msg = json.loads(msg)
-        print msg["type"]
-        self.sendMessage("Ca marche", binary)
+        #print msg["type"]
+        self.decode(msg)
+        #self.sendMessage("Ca marche", binary)
 
         
     ###### RECEPTION DU CLIENT ######
