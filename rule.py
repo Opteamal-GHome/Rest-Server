@@ -94,6 +94,10 @@ class Rules() :
         for rule in self.rules:
             if rule.name == nomRule:
                 self.rules.remove(rule)
+                
+    #def saveRules(self):
+        
+        
         
 
 
