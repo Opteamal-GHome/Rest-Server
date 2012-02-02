@@ -1,5 +1,4 @@
 import socket
-import sys
 
 class SocketGHome :
     '''
@@ -7,16 +6,15 @@ class SocketGHome :
     '''
     
     def __init__(self) :
-        self.hote = "localhost"
-        self.port = 80
+        self.hote = "134.214.167.14"
+        self.port = 4433
         self.connexionServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connexionServer.connect((self.hote, self.port))
         print("Connexion etablie avec le serveur sur le port {}".format(self.port))
     
     def sendMsg (self, message):
         # On envoie la taille du message en octets dans un premier temps
-        tailleMessage = sys.getsizeof(message)
-        self.connexionServer.send(tailleMessage)
+        # self.connexionServer.send(len(message))
         
         # On envoie le message ensuite    
         message = message.encode()
