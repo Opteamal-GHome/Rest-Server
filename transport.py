@@ -7,13 +7,16 @@ class TransportGHome():
     Envoi et Reception de Messages vers/depuis le serveur GHome
     '''
     
+    def __init__(self):
+        self.transport = SocketGHome()
+    
     def getCapteurs(self, ensembleCapteurs):
         '''
         Demande de la liste des capteurs a l'application Serveur
         Envoi par socket du message et attente de la liste
         '''
         message = 'INFO,00'
-        SocketGHome.sendMsg(self, message)
+        self.transport.sendMsg(self, message)
         messageRecu = SocketGHome.receiveMsg(self)
         
         liste = messageRecu.split(',')
@@ -39,7 +42,7 @@ class TransportGHome():
         Demande des informations d'un capteur dont l'id est passe en parametre
         '''
         message = 'INFO,' + idCapteur
-        SocketGHome.sendMsg(self, message)
+        self.transport.sendMsg(self, message)
         messageRecu = SocketGHome.receiveMsg(self)
         
         liste = messageRecu.split(',')
@@ -55,7 +58,7 @@ class TransportGHome():
         '''
         Envoi d'une regle au serveur C
         '''
-        SocketGHome.sendMsg(self,regle)
+        self.transport.sendMsg(regle)
         
         
     def decode(self, msg):
