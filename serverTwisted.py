@@ -5,9 +5,12 @@ from twisted.web.static import File
 from twisted.python import log
 from datetime import datetime
 
+from rule import Rules, Rule
+
 from capteurs import CapteursHTML, CapteursFactory
 from admin import AdminHTML
 from statistique import StatistiqueHTML
+from form import Form
 from socketGHome import *
 
 # Main Serveur
@@ -29,16 +32,17 @@ class PageNotFoundError(resource.Resource):
 
 if __name__ == '__main__':
     root = File("/home/tommi/INSA/4IF/GHome/ClientPC/") 
+    
+    # Objets requis par le serveur
     capteursFactory = CapteursFactory()
+    ensembleRules = Rules()
     
     # Initialisation de l'envoi des pages HTML
     root.putChild('', CapteursHTML(capteursFactory))
     root.putChild('capteurs', CapteursHTML(capteursFactory))
     root.putChild('stat', StatistiqueHTML())
     root.putChild('admin', AdminHTML())
-
-    # Demarrage du socket GHome
-    
+    root.putChild('form', Form(ensembleRules))
     
     log.startLogging(sys.stdout)
     log.msg('Starting server: %s' %str(datetime.now()))
