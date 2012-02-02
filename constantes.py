@@ -1,8 +1,11 @@
-ipServeurGHome = "134.214.166.16"
+#ipServeurGHome = "134.214.166.16"
+ipServeurGHome = "127.0.0.1"
 portServeurGHome = 8080
 
-portServerData = 421
+portServerData = 443
 
-portServeurWeb = 8080
+portServeurWeb = 80
 
-typeLiaison = "eth0"
+typeLiaison = "wlan0"
+
+portWebSocket = 8081

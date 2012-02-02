@@ -52,7 +52,7 @@ except socket.error, msg:
     sys.exit(2)
  
 #sock.send("GET %s HTTP/1.0\r\nHost: %s\r\n\r\n" % (GET, HOST))
-sock.send("coucou")
+sock.send("coucou autre ordi")
  
 data = sock.recv(1024)
 string = ""

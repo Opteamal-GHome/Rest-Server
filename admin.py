@@ -155,10 +155,11 @@ class CreateRule(resource.Resource):
     Creation d'une regle
     '''
 
-    def __init__(self,capteursFactory, actionneursFactory, ensRules):
+    def __init__(self,capteursFactory, actionneursFactory, ensRules, transport):
         self.captFactory = capteursFactory
         self.actionFactory = actionneursFactory 
         self.ensembleRules = ensRules
+        self.transport = transport
         resource.Resource.__init__(self)
         
 
@@ -167,6 +168,8 @@ class CreateRule(resource.Resource):
         Creation de la page admin - RuleCreation 
         /admin
         '''
+        self.transport.getAllDevices(self.captFactory, self.actionFactory)
+        
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
         headerHtml = headerHtml.replace("$STYLE$", "core_admin.css")

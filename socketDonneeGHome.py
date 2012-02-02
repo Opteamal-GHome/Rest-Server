@@ -3,16 +3,23 @@ import constantes, json
 from twisted.internet.protocol import Protocol, Factory
 
 from form import WebSocketForm
+from capteurs import *
+from actionneurs import *
 
 class SocketDataGHome(Protocol) :
     '''
     Client Socket to connect to server GHome developped with C language.
     '''
+    
+    def connectionMade(self):
+        print "Connected from", self.transport.client
                 
     def dataReceived(self, data):
         print 'Data Socket Data : ' + str(data)
         self.factory.decode(data)
 
+    def connectionLost(self, reason):
+        print "Disconnected from", self.transport.client
         
 
 
@@ -25,15 +32,37 @@ class SocketDataGHomeFactory(Factory):
         self.capteursFactory = factoryCapteurs
         self.actionneursFactory = factoryActionneurs
         self.ws = form
-        print 'Initialisation du socket Data GHome'
+        print 'Initialisation du socket Data GHome sur '
         
         
     def decode(self, msg):
         data = json.loads(msg)
         if data["msgType"] == "device_updated":
-            # Device modifie : On le change au niveau du serveur et on envoie la MAJ au websocket
-            if (self.capteursFactory.modifierCapteur(data["id"], data["data"]) == False):
-                # Si aucun capteur n'a ete modifie, le device est un actionneur
-                self.actionneursFactory.modifierActionneur(data["id"], data["data"])
+        
+            # Si le dispositif est un capteur
+            if data["role"] == "S":
+                capteur = self.capteursFactory.getCapteur(data["id"])
                 
+                # Ajout d'un nouveau capteur
+                if capteur == None:
+                    newCapt = Capteur(data["id"], "", data["type"], data["data"])
+                    self.capteursFactory.ajouterCapteur(newCapt)
+                # Modification d'un capteur existant
+                else:
+                    self.capteursFactory.modifierCapteur(data["id"], data["data"])
+            
+            
+            # Si le dispositif est un actionneur
+            elif data["role"] == "A":
+                actionneur = self.actionneursFactory.getActionneur(data["id"])
+                
+                # Ajout d'un nouveau capteur
+                if actionneur == None:
+                    newAct = Actionneur(data["id"], "", data["type"], data["data"])
+                    self.actionneursFactory.ajouterActionneur(newAct)
+                # Modification d'un capteur existant
+                else:
+                    self.actionneursFactory.modifierActionneur(data["id"], data["data"])
+        
+            print 'Data : ' + data["data"]        
             self.ws.changedDevice(data["id"], data["data"])

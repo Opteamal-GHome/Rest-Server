@@ -9,15 +9,21 @@ from twisted.web.static import File
 from autobahn.websocket import WebSocketServerFactory, WebSocketServerProtocol, listenWS
 
 
-class WebSocketForm (WebSocketServerProtocol):   
+class WebSocketForm (WebSocketServerProtocol): 
+
+    def onOpen(self):
+        self.factory.register(self)  
     
     def onMessage(self, msg, binary):
-        print 'reception'
+        print 'reception : ' + str(msg)
         msg = json.loads(msg)
         #print msg["type"]
         self.factory.decode(msg)
         #self.sendMessage("Ca marche", binary)
                
+    def connectionLost(self, reason):
+        WebSocketServerProtocol.connectionLost(self, reason)
+        self.factory.unregister(self)
 
 
 class WebSocketFactory (WebSocketServerFactory):
@@ -25,13 +31,25 @@ class WebSocketFactory (WebSocketServerFactory):
 
     def __init__(self, url):
         WebSocketServerFactory.__init__(self, url)
+        self.clients = []
         
-        # Creation d'un nouveau tableau de rule
-        #self.ensembleRules = Rules()
-        
-        
-    #def getEnsRules(self):
-        #return self.ensembleRules
+
+    def register(self, client):
+        if not client in self.clients:
+             print "registered client " + client.peerstr
+             self.clients.append(client)
+    
+    def unregister(self, client):
+        if client in self.clients:
+             print "unregistered client " + client.peerstr
+             self.clients.remove(client)
+             
+    def broadcast(self, msg):
+        print "broadcasting message '%s' .." % msg
+        print 'nbr Clients : ' + str(len(self.clients))
+        for c in self.clients:
+            print "send to " + c.peerstr
+            c.sendMessage(json.dumps(msg))
                 
     ###### RECEPTION DU CLIENT ######
     
@@ -47,6 +65,12 @@ class WebSocketFactory (WebSocketServerFactory):
             nomRule = data["ruleName"]
             self.ensembleRules.supprimerRule(nomRule)
         #elif (data["type"] == "getStatTemp"):
+        
+    def changeNameDevice(self, data):
+        '''
+        Change le nom d'un device
+        '''
+        
             
     
     def msgNewRuleC (self, data):
@@ -55,7 +79,7 @@ class WebSocketFactory (WebSocketServerFactory):
         '''
         rule = Rule(data["rule"])     
         rule.priority = "1"
-        rule.name = "Nouvelle"
+        rule.name = rule.name
         self.ensembleRules.ajouterRule(rule)
         jsonMsg = rule.createJsonRule()
         
@@ -64,6 +88,7 @@ class WebSocketFactory (WebSocketServerFactory):
         jsonMsg = jsonMsg.replace('"leftOp": u', '"leftOp": ');
         jsonMsg = jsonMsg.replace('"actuator": u', '"actuator": ');
         jsonMsg = jsonMsg.replace('"value": u', '"value": ');
+        jsonMsg = jsonMsg.replace('"ruleName": u', '"ruleName": ');
         
         print jsonMsg
         
@@ -72,31 +97,39 @@ class WebSocketFactory (WebSocketServerFactory):
         
         # Reception de la reponse
         answer = self.socketG.receiveAnswer()
+        print 'Answer : ' + str(answer)
         answer = json.loads(answer)
         if answer["msgType"] == "R_newRule":
-            self.msgAnswer(answer["status"], answer["error"])
+            if answer["status"] == "ACCEPTED":
+                self.msgAnswer(answer["status"], "")
+            else:
+                self.msgAnswer(answer["status"], answer["error"])
         
         
         
     ###### VERS LE CLIENT ######
     
     
-    def changedDevice(self, idD, data):
+    def changedDevice(self, idD, donnee):
         '''
         Envoye a l'utilisateur via les websockets lorsque la valeur d'un device a change
         '''
         data = {}
         data["msgType"] = "device_updated"
         data["id"] = idD
-        data["data"] = data
-        self.sendMessage(data)
+        data["data"] = donnee
+        
+        print 'Changed Device Websocket : ' + str(data)
+        self.broadcast(data)
         
     def msgAnswer(self, status, error):
         data = {}
         data["msgType"] = "answerRule"
         data["status"] = str(status)
         data["error"] = str(error)
-        self.sendMessage(data)
+        
+        print 'data answer : ' + str(data)
+        self.broadcast(data)
         
         
     def sendTemperature(self, idC):
@@ -110,5 +143,5 @@ class WebSocketFactory (WebSocketServerFactory):
         for donnee in capteur.data:
             data["data"].append(donnee)
             
-        self.sendMessage(data)
+        self.broadcast(data)
         
