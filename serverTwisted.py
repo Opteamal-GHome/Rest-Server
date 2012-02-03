@@ -12,6 +12,7 @@ from capteurs import CapteursHTML, CapteursFactory
 from admin import AdminHTML
 from statistique import StatistiqueHTML
 from form import Form
+from transport import TransportGHome
 
 # Main Serveur
 class Root(resource.Resource):
@@ -38,16 +39,17 @@ if __name__ == '__main__':
     actionneursFactory = ActionneursFactory()
     ensembleRules = Rules()
     
+    transport = TransportGHome()
+    
     # Initialisation de l'envoi des pages HTML
-    root.putChild('', CapteursHTML(capteursFactory))
-    root.putChild('capteurs', CapteursHTML(capteursFactory))
+    root.putChild('', CapteursHTML(capteursFactory, actionneursFactory, transport))
+    root.putChild('capteurs', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('stat', StatistiqueHTML())
     root.putChild('admin', AdminHTML(capteursFactory, actionneursFactory))
-    root.putChild('form', Form(ensembleRules))
+    root.putChild('form', Form(ensembleRules, transport))
     
     log.startLogging(sys.stdout)
     log.msg('Starting server: %s' %str(datetime.now()))
     server = server.Site(root)
     reactor.listenTCP(8080, server) #@UndefinedVariable
     reactor.run() #@UndefinedVariable
-
