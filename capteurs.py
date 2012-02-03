@@ -5,16 +5,17 @@ class CapteursHTML(resource.Resource):
     Classe Capteurs. Est appele lorsque l'utilisateur souhaite la liste des capteurs present
     '''
     
-    def __init__(self, capteurFactory):
-        self.factory = capteurFactory
+    def __init__(self, capteurFactory, actionneurFactory, transport):
+        self.factoryCapteurs = capteurFactory
+        self.factoryActionneurs = actionneurFactory
+        self.transport = transport
         
 
     def render_GET(self, request):
         '''
         Methode de reponse pour localhost:8000/capteurs/
         '''
-        
-        print("passe")
+        self.transport.getAllDevices(self.factoryCapteurs, self.factoryActionneurs)
         
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
@@ -40,7 +41,7 @@ class CapteursHTML(resource.Resource):
         Modification de la page corps_capteurs pour ajouter les capteurs dans les box
         '''
         page = ""
-        for capteur in self.factory.capteurs:
+        for capteur in self.factoryCapteurs.capteurs:
             # Nom du capteur
             page +=  """<div class="capteur">
             <div class="nom_capteur">""" + str(capteur.nom) + """</div>"""
@@ -66,7 +67,7 @@ class CapteursFactory():
     
     def __init__(self):
         ''' Methode Initialisation de la classe '''
-        capteur1 = Capteur(1, 'Salon', 'T', 15)
+        capteur1 = Capteur(12, 'Salon', 'T', 15)
         capteur2 = Capteur(2, 'Chambre', 'P', 35)
         capteur3 = Capteur(3, 'Salle de bain', 'T', 20)
         self.capteurs=[capteur1, capteur2, capteur3]
