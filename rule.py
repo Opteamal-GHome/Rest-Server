@@ -22,13 +22,13 @@ class Rule():
         # Extraction des conditions      
         for conditionMsg in msg['conditions']:
             # Si la condition est une date
-            if conditionMsg.type[4:8] == "date":
-                condition = ConditionDate(conditionMsg.type[0:3], conditionMsg.date)
+            if conditionMsg['type'][4:8] == "date":
+                condition = ConditionDate(conditionMsg['type'][0:3], conditionMsg['date'])
             
             else :
-                leftOp = conditionMsg.leftOp
-                rightOp = conditionMsg.rightOp
-                typeC = conditionMsg.type
+                leftOp = conditionMsg['leftOp']
+                rightOp = conditionMsg['rightOp']
+                typeC = conditionMsg['type']
           
                 condition = Condition(leftOp, typeC, rightOp)
                 
@@ -36,8 +36,8 @@ class Rule():
             
         # Extraction des actions
         for actionMsg in msg['actions']:
-            levier = actionMsg.actuator
-            valeur = actionMsg.value
+            levier = actionMsg['actuator']
+            valeur = actionMsg['value']
             
             action = Action(levier,valeur)
             self.actions.append(action)
@@ -53,7 +53,7 @@ class Rule():
         
         data["rule"] = {}
         data["rule"]["ruleName"] = self.name
-                
+        
         # Ajout des conditions
         data["rule"]["conditions"] = []
         for condition in self.conditions:
