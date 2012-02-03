@@ -1,6 +1,8 @@
 from socketGHome import SocketGHome
-from capteurs import Capteur
+import simplejson as json
 from rule import Rule
+from actionneurs import Actionneur
+from capteurs import Capteur
 
 class TransportGHome():
     '''
@@ -10,49 +12,57 @@ class TransportGHome():
     def __init__(self):
         self.transport = SocketGHome()
     
-    def getCapteurs(self, ensembleCapteurs):
+    def getAllDevices(self, capts, actuators):
         '''
         Demande de la liste des capteurs a l'application Serveur
         Envoi par socket du message et attente de la liste
         '''
-        message = 'INFO,00'
-        self.transport.sendMsg(self, message)
-        messageRecu = SocketGHome.receiveMsg(self)
+        # Message d'envoi
+        data = {}
+        data["msgType"] = "getAllDevices"
+        jsonRule = str(data)
         
-        liste = messageRecu.split(',')
-        typeMessage = liste[0]
-        if typeMessage == 'CAPTEURS' :
-            nbCapteurs = liste[1]
-
-            # On cree une sous liste compose de liste de 3 elements            
-            subList = [liste[n:n+3] for n in range(2, len(liste), 3)]
-            
-            # On cree des objets Capteur
-            for sub in range(0,nbCapteurs):
-                idCapteur = subList[sub][0]
-                nomCapteur = subList[sub][1]
-                typeCapteur = subList[sub][2]
-                capteur = Capteur(idCapteur, nomCapteur, typeCapteur)
+        # Envoi Message
+        self.transport.sendMsg(jsonRule)
+        
+        # Reception Message : Parsage
+        msgRcv = self.transport.receiveMsg()
+        dataMsg = json.loads(msgRcv)
+        if dataMsg["msgType"] == "R_getAllDevices":
+            for capteur in dataMsg["sensors"]:
+                capteur1 = Capteur(capteur["id"], "", capteur["type"], capteur["data"])
+                capts.ajouterCapteur(capteur1)
                 
-                ensembleCapteurs.ajouterCapteur(capteur)
+            for actuator in dataMsg["actuators"]:
+                actuator1 = Actionneur(actuator["id"], "", actuator["type"], actuator["data"])
+                actuators.ajouterActionneur(actuator1) 
                 
     
-    def getCapteur(self, idCapteur):
+    def getDevice(self, idDevice, tab):
         '''
-        Demande des informations d'un capteur dont l'id est passe en parametre
+        Demande des informations d'un dispositif dont l'id est passe en parametre
+        On considere que ce capteur est deja connu par le serveur Rest
         '''
-        message = 'INFO,' + idCapteur
-        self.transport.sendMsg(self, message)
-        messageRecu = SocketGHome.receiveMsg(self)
+        # Message d'envoi
+        data = {}
+        data["msgType"] = "getDevice"
+        data["id"] = str(idDevice)
+        jsonRule = str(data)
         
-        liste = messageRecu.split(',')
-        typeMessage = liste[0]
-        numCapteur = liste[1]
+        # Envoi Message
+        self.transport.sendMsg(jsonRule)
         
-        if typeMessage == 'CAPTEUR':
-            if numCapteur == idCapteur:
-                return liste[2]
+        # Reception Message : Parsage
+        msgRcv = self.transport.receiveMsg()
+        dataMsg = json.loads(msgRcv)
+        if dataMsg["msgType"] == "getDevice":
+            if dataMsg["id"] == idDevice:
+                if dataMsg["typeDevice"] == "sensor":
+                    tab.modifierCapteur(idDevice,dataMsg["data"])
+                elif dataMsg["typeDevice"] == "actuator":
+                    tab.modifierActionneur(idDevice, dataMsg["data"])
                 
+        
                 
     def sendRule(self, regle):
         '''
