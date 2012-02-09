@@ -4,10 +4,8 @@ from twisted.web import server, resource
 from twisted.web.static import File
 from twisted.python import log
 from datetime import datetime
-
 from rule import Rules
 from actionneurs import ActionneursFactory
-
 from capteurs import CapteursHTML, CapteursFactory
 from admin import AdminHTML
 from statistique import StatistiqueHTML
@@ -38,7 +36,7 @@ if __name__ == '__main__':
     actionneursFactory = ActionneursFactory()
     ensembleRules = Rules()
     
-    # transport = TransportGHome()
+    #transport = TransportGHome()
     transport = 2
     
     # Initialisation de l'envoi des pages HTML

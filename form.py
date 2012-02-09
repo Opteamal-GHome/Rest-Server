@@ -1,5 +1,4 @@
-from twisted.web import resource, server, http
-import simplejson as json
+from twisted.web import resource
 from rule import Rule
 
 class Form (resource.Resource):
@@ -52,7 +51,12 @@ class Form (resource.Resource):
             jsonMsg = jsonMsg.replace('"value": u', '"value": ');
             
             print jsonMsg
-            # self.transport.sendRule(jsonMsg)
+            
+            # Envoi de la regle
+            self.transport.sendRule(jsonMsg)
+            
+            # Reception de la reponse
+            print self.transport.receiveAnswer()
             
         elif (data["type"] == "supprRule"):
             # Suppression d'une regle
