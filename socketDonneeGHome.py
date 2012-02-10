@@ -36,6 +36,7 @@ class SocketDataGHomeFactory(Factory):
         
         
     def decode(self, msg):
+        print 'Recu de la socket Donnee : ' + str(msg)
         data = json.loads(msg)
         if data["msgType"] == "device_updated":
         

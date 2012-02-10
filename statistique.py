@@ -2,8 +2,10 @@ from twisted.web import resource
 
 class StatistiqueHTML(resource.Resource):
     
-    def __init__(self):
+    def __init__(self, capteursFactory, webS):
         resource.Resource.__init__(self)
+        self.capteursFactory = capteursFactory
+        self.ws = webS
     
     def render_GET(self, request):
         '''

@@ -36,21 +36,19 @@ if __name__ == '__main__':
     factory.capteursFactory = capteursFactory
     factory.actionneursFactory = actionneursFactory
     
-    #ensembleRules = factory.getEnsRules()
-        
     # Socket data    
     reactor.listenTCP(constantes.portServerData, SocketDataGHomeFactory(capteursFactory, actionneursFactory, factory))
         
-    #transport = TransportGHome()
-    transport = 2
+    transport = TransportGHome()
+    #transport = 2
     
     factory.socketG = transport
     
     # Initialisation de l'envoi des pages HTML
     root.putChild('', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('capteurs', CapteursHTML(capteursFactory, actionneursFactory, transport))
-    root.putChild('stat', StatistiqueHTML())
-    root.putChild('temperature', StatistiqueHTML())
+    root.putChild('stat', StatistiqueHTML(capteursFactory, factory))
+    root.putChild('temperature', StatistiqueHTML(capteursFactory, factory))
     root.putChild('create_rule', CreateRule(capteursFactory, actionneursFactory, ensembleRules, transport))
     root.putChild('rules', DisplayRules(capteursFactory, actionneursFactory, ensembleRules))
     root.putChild('groups', Groups(capteursFactory, actionneursFactory, ensembleRules))

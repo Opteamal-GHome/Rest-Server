@@ -168,7 +168,7 @@ class CreateRule(resource.Resource):
         Creation de la page admin - RuleCreation 
         /admin
         '''
-        #self.transport.getAllDevices(self.captFactory, self.actionFactory)
+        self.transport.getAllDevices(self.captFactory, self.actionFactory)
         
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()

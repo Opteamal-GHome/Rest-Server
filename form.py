@@ -66,6 +66,9 @@ class WebSocketFactory (WebSocketServerFactory):
             self.ensembleRules.supprimerRule(nomRule)
         elif (data["msgType"] == "rename_device"):
             self.changeNameDevice(data)
+        elif (data["msgType"] == "stat"):
+            idCapteur = data["idC"]
+            self.sendTemperature(idCapteur)
         
     def changeNameDevice(self, data):
         '''
@@ -86,7 +89,6 @@ class WebSocketFactory (WebSocketServerFactory):
         rule = Rule(data["rule"])     
         rule.priority = "1"
         rule.name = rule.name
-        self.ensembleRules.ajouterRule(rule)
         jsonMsg = rule.createJsonRule()
         
         jsonMsg = jsonMsg.replace('"type": u', '"type": ');
@@ -107,8 +109,11 @@ class WebSocketFactory (WebSocketServerFactory):
         answer = json.loads(answer)
         if answer["msgType"] == "R_newRule":
             if answer["status"] == "ACCEPTED":
+                # La regle a ete acceptee par le serveur
+                self.ensembleRules.ajouterRule(rule)
                 self.msgAnswer(answer["status"], "")
             else:
+                # La regle a ete refusee par le serveur
                 self.msgAnswer(answer["status"], answer["error"])
         
         
@@ -124,6 +129,7 @@ class WebSocketFactory (WebSocketServerFactory):
         data["msgType"] = "device_updated"
         data["id"] = idD
         data["data"] = donnee
+        data["typeDevice"] = typeD
         
         print 'Changed Device Websocket : ' + str(data)
         self.broadcast(data)
