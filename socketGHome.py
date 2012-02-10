@@ -1,4 +1,5 @@
 import socket
+import struct
 
 class SocketGHome :
     '''
@@ -29,8 +30,10 @@ class SocketGHome :
             print 'Connection NOK'
             
         # On envoie la taille du message en octets dans un premier temps
-        self.connexionServer.send(str(len(message)))
-            
+        print str(len(message))
+        self.connexionServer.send(struct.pack('!i',len(message)))
+        
+        # On envoie le message ensuite    
         message = message.encode()
         self.connexionServer.send(message)
                         
