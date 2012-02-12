@@ -233,8 +233,10 @@ class CreateRule(resource.Resource):
             # Image du capteur
             if capteur.type == 'T':
                 page += """<img class="img_periph" src="images/Thermometer_1_24282.png"> """
-            elif capteur.type == 'P':
+            elif capteur.type == 'L':
                 page += """<img class="img_periph" src="images/bulb.png">"""
+            else:
+                page += """<img class="img_periph" alt=\"""" + capteur.type + """" src="images/inexistant.png">"""
                 
             # Valeur Nom du capteur
             page += """<div class="nom_periph">""" + str(capteur.nom) + """</div>"""              

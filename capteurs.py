@@ -58,8 +58,10 @@ class CapteursHTML(resource.Resource):
             # Image du capteur
             if capteur.type == 'T':
                 page += """<img class="img_capteur" src="images/Thermometer_1_24282.png"> """
-            elif capteur.type == 'P':
+            elif capteur.type == 'L':
                 page += """<img class="img_capteur" src="images/bulb.png">"""
+            else:
+                page += """<img class="img_capteur" alt=\"""" + capteur.type + """" src="images/inexistant.png">"""
                 
             # Valeur Data du capteur
             page += """<div class="val_capteur">""" + str(capteur.data[-1]) + """</div>"""              
