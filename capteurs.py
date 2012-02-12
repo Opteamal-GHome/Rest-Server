@@ -52,14 +52,26 @@ class CapteursHTML(resource.Resource):
         for capteur in self.factoryCapteurs.capteurs:
             print 'Capteur : ' + str(capteur.id)
             # Nom du capteur
-            page +=  """<div id=\"""" + str(capteur.id) + """\" class="capteur">
-            <input type="text" class="nom_capteur" value=\"""" + str(capteur.nom) + """"/>"""
+            page +=  """<div id=\"""" + str(capteur.id) + """\" class="capteur">"""
+            
+            if str(capteur.type) == "U" or str(capteur.type) == 'V':
+                page += """<div type="text" class="nom_capteur" value=\"""" + str(capteur.nom) + """"></div>"""
+            elif str(capteur.nom) == "":
+                page += """<input type="text" class="nom_capteur" value="Rentrez un nom" />"""
+            else:
+                page += """<input type="text" class="nom_capteur" value=\"""" + str(capteur.nom) + """"/>"""
             
             # Image du capteur
             if capteur.type == 'T':
                 page += """<img class="img_capteur" src="images/Thermometer_1_24282.png"> """
             elif capteur.type == 'L':
                 page += """<img class="img_capteur" src="images/bulb.png">"""
+            elif capteur.type == 'U':
+                page += """<img class="img_capteur" src="images/meteo_variable.png">"""
+            elif capteur.type == 'C':
+                page += """<img class="img_capteur" src="images/touch_up.png">"""
+            elif capteur.type == 'I':
+                page += """<img class="img_capteur" src="images/1.png">"""
             else:
                 page += """<img class="img_capteur" alt=\"""" + capteur.type + """" src="images/inexistant.png">"""
                 
