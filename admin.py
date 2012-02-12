@@ -8,17 +8,19 @@ class DisplayRules(resource.Resource):
     Affichage des regles
     '''
 
-    def __init__(self,capteursFactory, actionneursFactory, ensRules):
+    def __init__(self,capteursFactory, actionneursFactory, ensRules, transport):
         resource.Resource.__init__(self)
         self.capteursFactory = capteursFactory
         self.actionneursFactory = actionneursFactory
         self.ensembleRules = ensRules
+        self.transport = transport
         
     def corpsDisplayRules(self):
         '''
         Methode de reponse a localhost:5000/admin/rules
         Cree un objet de type PageIndex et renvoie la page principale
         ''' 
+        
         reponse = ""
         
         reponse += """<ul id="liste_regles">"""
@@ -62,8 +64,20 @@ class DisplayRules(resource.Resource):
                     reponse += """<div class="operateur" title=\"""" + str(condition.type) + """\">></div>"""
     
     
-                # Operateur de droite : TODO Voir pour les capteurs a droite
-                reponse += """<div class="value_condition">""" + str(condition.rightOp) + """</div>"""
+                # Operateur de droite                
+                if (str(condition.rightOp[0]) == "@"):
+                    # Si presence d'un @, alors c'est un capteur
+                    
+                    capteurDroite = self.capteursFactory.getCapteur(condition.rightOp[1:])
+                    if capteurDroite.type == 'T':
+                        reponse += """<img class="img_capteur" src="images/Thermometer_1_24282.png"> """
+                    elif capteurDroite.type == 'P':
+                        reponse += """<img class="img_capteur" src="images/bulb.png">"""
+                        
+                    reponse += """<div class="nom_capteur">""" + str(capteurDroite.nom) + """</div>"""
+                
+                else:
+                    reponse += """<div class="value_condition">""" + str(condition.rightOp) + """</div>"""
   
                 reponse += """</li>"""
 
@@ -101,6 +115,9 @@ class DisplayRules(resource.Resource):
         return reponse
         
     def render_GET(self, request):
+    
+        self.transport.getAllDevices(self.capteursFactory, self.actionneursFactory)
+    
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
         headerHtml = headerHtml.replace("$STYLE$", "core_admin.css")
@@ -256,6 +273,14 @@ class CreateRule(resource.Resource):
                 page += """<img class="img_periph" src="images/Thermometer_1_24282.png"> """
             elif capteur.type == 'L':
                 page += """<img class="img_periph" src="images/bulb.png">"""
+            elif capteur.type == 'U':
+                page += """<img class="img_periph" src="images/meteo_variable.png">"""
+            elif capteur.type == 'H':
+                page += """<img class="img_periph" src="images/Rain.png">"""
+            elif capteur.type == 'C':
+                page += """<img class="img_periph" src="images/touch_up.png">"""
+            elif capteur.type == 'I':
+                page += """<img class="img_periph" src="images/1.png">"""
             else:
                 page += """<img class="img_periph" alt=\"""" + capteur.type + """" src="images/inexistant.png">"""
                 

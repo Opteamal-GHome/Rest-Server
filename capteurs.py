@@ -99,9 +99,9 @@ class CapteursHTML(resource.Resource):
             page += """<img class="img_capteur" src="images/C315b.png"> """
                 
             # Valeur Data de l'actionneur
-            if (actionneur.value == "0"):
+            if (str(actionneur.value) == "0"):
                 page += """<div class="val_capteur">""" + "Eteint" + """</div>"""       
-            elif (actionneur.value == "1"):
+            elif (str(actionneur.value) == "1"):
                 page += """<div class="val_capteur">""" + "Allume" + """</div>"""         
             page += """</div>"""
 
@@ -141,9 +141,9 @@ class CapteursFactory():
         if capteur.id not in self.getIDCapteurs():
             # On verifie si le capteur est du type meteo
             if str(capteur.type) == "U":
-                capteur.nom = "Meteo"
+                capteur.nom = "Meteo Temp"
             elif str(capteur.type) == "V":
-                capteur.nom = "Humidite"
+                capteur.nom = "Meteo Hum"
 
             self.capteurs.append(capteur)
         else:

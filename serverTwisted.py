@@ -63,7 +63,7 @@ if __name__ == '__main__':
     root.putChild('stat', StatistiqueHTML(capteursFactory, factory))
     root.putChild('temperature', StatistiqueTemperatureHTML(capteursFactory))
     root.putChild('create_rule', CreateRule(capteursFactory, actionneursFactory, ensembleRules, transport))
-    root.putChild('rules', DisplayRules(capteursFactory, actionneursFactory, ensembleRules))
+    root.putChild('rules', DisplayRules(capteursFactory, actionneursFactory, ensembleRules, transport))
     root.putChild('groups', GroupsHtml(capteursFactory, actionneursFactory, ensembleRules, transport, ensembleGroupes))
     
     log.startLogging(sys.stdout)
