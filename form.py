@@ -194,7 +194,7 @@ class WebSocketFactory (WebSocketServerFactory):
             
         # Si elle est correcte, on l'envoie au serveur C
         else:
-            rule.priority = "1"
+            rule.priority = "0"
             rule.name = rule.name
             jsonMsg = rule.createJsonRule()
                         
