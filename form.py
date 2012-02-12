@@ -75,12 +75,19 @@ class WebSocketFactory (WebSocketServerFactory):
         '''
         Change le nom d'un device
         '''
-        capteurId = data["id"]
+        idRecupere = data["id"]
         newName = data["name"]
         
-        capteur = self.capteursFactory.getCapteur(capteurId)
-        capteur.nom = newName
-        print 'Nom du capteur modifie'
+        # On recupere le capteur correspondant
+        device = self.capteursFactory.getCapteur(idRecupere)
+        
+        # Si la recuperation a echoue, c'est qu'on essaye de recuperer un actionneur
+        if (device == None):
+            device = self.actionneursFactory.getActionneur(idRecupere)
+        
+        # On change ensuite le nom
+        device.nom = newName
+        print 'Nom du device modifie'
         
     def changePriorities(self, rules):
         '''
