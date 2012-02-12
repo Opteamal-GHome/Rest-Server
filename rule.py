@@ -118,7 +118,10 @@ class Rules() :
         self.rules=[]
         
     def ajouterRule (self, rule):
-        self.rules.append(rule);
+        '''
+        Ajoute la rule en debut de liste
+        '''
+        self.rules.insert(0,rule);
         
     def supprimerRule(self, nomRule):
         '''
