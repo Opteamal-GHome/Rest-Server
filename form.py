@@ -70,6 +70,20 @@ class WebSocketFactory (WebSocketServerFactory):
             self.sendTemperature(idCapteur)
         elif (data["msgType"] == "priorities"):
             self.changePriorities(data["rules"])
+        elif (data["msgType"] == "meteo"):
+            self.changeMeteo(data["codePostal"])
+            
+    def changeMeteo(self,codePostal):
+        ''' 
+        Changement de la meteo 
+        '''
+        data = {}
+        data["msgType"] = "meteo"
+        data["codePostal"] = str(codePostal)
+        jsonMsg = str(data)
+        
+        self.socketG.sendMsg(jsonMsg)
+        
         
     def changeNameDevice(self, data):
         '''

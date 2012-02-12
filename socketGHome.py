@@ -43,7 +43,7 @@ class SocketGHome :
         '''
         Methode de reception d'un message
         '''
-        msg_recu = self.connexionServer.recv(1024)
+        msg_recu = self.connexionServer.recv(2048)
         return msg_recu 
     
     def closeServer (self):
