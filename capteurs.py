@@ -135,6 +135,12 @@ class CapteursFactory():
         Ajout d'un capteur
         '''        
         if capteur.id not in self.getIDCapteurs():
+			# On verifie si le capteur est du type meteo
+			if str(capteur.type) == "U":
+				capteur.nom = "Meteo"
+			elif str(capteur.type) == "V":
+				capteur.nom = "Humidite"
+		
             self.capteurs.append(capteur)
         else:
             self.modifierCapteur(capteur.id, capteur.data)
