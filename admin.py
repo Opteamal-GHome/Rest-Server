@@ -83,6 +83,7 @@ class PageIndex(resource.Resource):
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
         headerHtml = headerHtml.replace("$STYLE$", "core_admin.css")
+        headerHtml = headerHtml.replace("$JS_TO_INCLUDE$", "client_admin_script.js")
         headerFile.close()      
         
         adminFile = open("/home/tommi/INSA/4IF/GHome/ClientPC/core_admin.html")
