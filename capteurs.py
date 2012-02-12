@@ -23,6 +23,7 @@ class CapteursHTML(resource.Resource):
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
         headerHtml = headerHtml.replace("$STYLE$", "core_capteurs.css")
+        headerHtml = headerHtml.replace("$JS_TO_INCLUDE$", "client_capteurs_script.js")
         headerFile.close()      
         
         capteurFile = open("../ClientPC/core_capteurs.html")
