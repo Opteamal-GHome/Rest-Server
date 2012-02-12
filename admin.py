@@ -69,9 +69,9 @@ class DisplayRules(resource.Resource):
                     # Si presence d'un @, alors c'est un capteur
                     
                     capteurDroite = self.capteursFactory.getCapteur(condition.rightOp[1:])
-                    if capteurDroite.type == 'T':
+                    if str(capteurDroite.type) == "T":
                         reponse += """<img class="img_capteur" src="images/Thermometer_1_24282.png"> """
-                    elif capteurDroite.type == 'P':
+                    elif str(capteurDroite.type) == "P":
                         reponse += """<img class="img_capteur" src="images/bulb.png">"""
                         
                     reponse += """<div class="nom_capteur">""" + str(capteurDroite.nom) + """</div>"""
