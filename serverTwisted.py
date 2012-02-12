@@ -9,8 +9,10 @@ from actionneurs import ActionneursFactory
 from capteurs import CapteursHTML, CapteursFactory
 from admin import AdminHTML
 from statistique import StatistiqueHTML
-from form import Form
+from form import *
 from transport import TransportGHome
+
+from websocket import *
 
 # Main Serveur
 class Root(resource.Resource):
@@ -36,6 +38,9 @@ if __name__ == '__main__':
     actionneursFactory = ActionneursFactory()
     ensembleRules = Rules()
     
+    factory = WebSocketInit(root) # handles websocket requests
+    factory.addHandler('/form', WebSocketForm)
+    
     #transport = TransportGHome()
     transport = 2
     
@@ -43,11 +48,14 @@ if __name__ == '__main__':
     root.putChild('', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('capteurs', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('stat', StatistiqueHTML())
+    root.putChild('temperature', StatistiqueHTML())
     root.putChild('admin', AdminHTML(capteursFactory, actionneursFactory))
-    root.putChild('form', Form(ensembleRules, transport))    
+    root.putChild('create_rule', AdminHTML(capteursFactory, actionneursFactory))
     
     log.startLogging(sys.stdout)
     log.msg('Starting server: %s' %str(datetime.now()))
-    server = server.Site(root)
-    reactor.listenTCP(8080, server) #@UndefinedVariable
+    
+    
+    
+    reactor.listenTCP(8080, factory) #@UndefinedVariable
     reactor.run() #@UndefinedVariable
