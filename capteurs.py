@@ -55,7 +55,7 @@ class CapteursHTML(resource.Resource):
             page +=  """<div id=\"""" + str(capteur.id) + """\" class="capteur">"""
             
             if str(capteur.type) == "U" or str(capteur.type) == 'V':
-                page += """<div type="text" class="nom_capteur" value=\"""" + str(capteur.nom) + """"></div>"""
+                page += """<div type="text" id=\"""" + str(capteur.nom) + """" class="nom_capteur">""" + str(capteur.nom) + """</div>"""
             elif str(capteur.nom) == "":
                 page += """<input type="text" class="nom_capteur" value="Rentrez un nom" />"""
             else:
@@ -72,6 +72,8 @@ class CapteursHTML(resource.Resource):
                 page += """<img class="img_capteur" src="images/touch_up.png">"""
             elif capteur.type == 'I':
                 page += """<img class="img_capteur" src="images/1.png">"""
+            elif capteur.type == 'H':
+                page += """<img class="img_capteur" src="images/Rain.png">"""
             else:
                 page += """<img class="img_capteur" alt=\"""" + capteur.type + """" src="images/inexistant.png">"""
                 
@@ -141,7 +143,7 @@ class CapteursFactory():
 			elif str(capteur.type) == "V":
 				capteur.nom = "Humidite"
 		
-            self.capteurs.append(capteur)
+			self.capteurs.append(capteur)
         else:
             self.modifierCapteur(capteur.id, capteur.data)
         

@@ -14,7 +14,7 @@ class StatistiqueHTML(resource.Resource):
         
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
-        headerHtml = headerHtml.replace("$STYLE$", "core_capteurs.css")
+        headerHtml = headerHtml.replace("$STYLE$", "core_stats.css")
         headerHtml = headerHtml.replace("$JS_TO_INCLUDE$", "client_stats_script.js")
         headerFile.close()      
         
