@@ -46,9 +46,9 @@ class DisplayRules(resource.Resource):
                 # On envoie la bonne image par rapport au type de l'operateur de gauche
                 capteur = self.capteursFactory.getCapteur(condition.leftOp)
                 print capteur.type
-                if capteur.type == 'T':
+                if str(capteur.type) == "T":
                     reponse += """<img class="img_capteur" src="images/Thermometer_1_24282.png"> """
-                elif capteur.type == 'P':
+                elif str(capteur.type) == "P":
                     reponse += """<img class="img_capteur" src="images/bulb.png">"""
 
                 # Operateur de gauche
