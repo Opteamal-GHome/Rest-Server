@@ -173,7 +173,7 @@ class GroupsHtml(resource.Resource):
         headerHtml = headerHtml.replace("$IPSERVEUR$", str(ni.ifaddresses(constantes.typeLiaison)[2][0]['addr'])+":" + str(constantes.portServeurWeb))
         headerFile.close()      
         
-        groupFile = open("/home/tommi/INSA/4IF/GHome/ClientPC/core_groups.html")
+        groupFile = open(constantes.cheminLocal + "core_groups.html")
         groupHtml = groupFile.read()
         groupHtml = groupHtml.replace("$LISTECAPTEURS$", createRule.renderListeCapteursExistants())
         groupHtml = groupHtml.replace("$LISTEACTIONNEURS$", createRule.renderListeActionneursExistants())
@@ -238,7 +238,7 @@ class CreateRule(resource.Resource):
         headerHtml = headerHtml.replace("$IPSERVEUR$", str(ni.ifaddresses(constantes.typeLiaison)[2][0]['addr'])+":" + str(constantes.portServeurWeb))
         headerFile.close()      
         
-        adminFile = open("/home/tommi/INSA/4IF/GHome/ClientPC/core_admin.html")
+        adminFile = open(constantes.cheminLocal + "core_admin.html")
         adminHtml = adminFile.read()
         adminHtml = adminHtml.replace("$LISTECAPTEURS$", self.renderListeCapteursExistants())
         adminHtml = adminHtml.replace("$LISTEACTIONNEURS$", self.renderListeActionneursExistants())

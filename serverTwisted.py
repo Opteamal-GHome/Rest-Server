@@ -22,7 +22,7 @@ import time
 
 
 if __name__ == '__main__':
-    root = File("/home/tommi/INSA/4IF/GHome/ClientPC/") 
+    root = File(constantes.cheminLocal) 
     server = server.Site(root)
         
     # Objets requis par le serveur

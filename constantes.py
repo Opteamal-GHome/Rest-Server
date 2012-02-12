@@ -13,3 +13,6 @@ portWebSocket = 8081
 
 # Chemin depuis local
 nomFichierRules = "rules"
+
+# Chemin du local
+cheminLocal = "/home/tommi/INSA/4IF/GHome/ClientPC/"
