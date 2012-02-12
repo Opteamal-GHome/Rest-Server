@@ -75,7 +75,7 @@ class CapteursHTML(resource.Resource):
             elif capteur.type == 'H':
                 page += """<img class="img_capteur" src="images/Rain.png">"""
             else:
-                page += """<img class="img_capteur" alt=\"""" + capteur.type + """" src="images/inexistant.png">"""
+                page += """<img class="img_capteur" alt=\"""" + str(capteur.type) + """" src="images/inexistant.png">"""
                 
             # Valeur Data du capteur
             page += """<div class="val_capteur">""" + str(capteur.data[-1]) + """</div>"""              
