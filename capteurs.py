@@ -17,7 +17,7 @@ class CapteursHTML(resource.Resource):
         '''
         Methode de reponse pour localhost:8000/capteurs/
         '''
-        #self.transport.getAllDevices(self.factoryCapteurs, self.factoryActionneurs)
+        self.transport.getAllDevices(self.factoryCapteurs, self.factoryActionneurs)
 
         
         headerFile = open("../ClientPC/header.html")
