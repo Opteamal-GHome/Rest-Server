@@ -50,9 +50,9 @@ class CapteursHTML(resource.Resource):
             
             # Image du capteur
             if capteur.type == 'T':
-                page += """<img class="img_capteur" src="Thermometer_1_24282.png"> """
+                page += """<img class="img_capteur" src="images/Thermometer_1_24282.png"> """
             elif capteur.type == 'P':
-                page += """<img class="img_capteur" src="bulb.png">"""
+                page += """<img class="img_capteur" src="images/bulb.png">"""
                 
             # Valeur Data du capteur
             page += """<div class="val_capteur">""" + str(capteur.data[-1]) + """</div>"""              

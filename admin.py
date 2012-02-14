@@ -29,8 +29,6 @@ class AdminHTML(resource.Resource):
         
         
     
-   
-
      
         
 class CreateRule(resource.Resource):
@@ -61,12 +59,39 @@ class CreateRule(resource.Resource):
         
         
         
+class Rules(resource.Resource):
+    '''
+    Classe appelee pour admin/rules
+    '''
+
+    def __init__(self,capteursFactory, actionneursFactory):
+        resource.Resource.__init__(self)
+        self.capteursFactory = capteursFactory
+        self.actionneursFactory = actionneursFactory
+        
+    def render_GET(self, request):
+        '''
+        Methode de reponse a localhost:5000/admin/rules
+        Cree un objet de type PageIndex et renvoie la page principale
+        '''       
+        index = PageIndex(self.capteursFactory, self.actionneursFactory)
+        return index.renderIndexAdmin()
+        
+            
+    def getChild(self, path, request):
+        return ""
+        
+        
+    def render_POST(self, request):
+        return self.render_GET(request)
+        
+           
         
 
 
-class PageIndex(resource.Resource):
+class RuleCreation(resource.Resource):
     '''
-    Page Index
+    Page Creation Regles
     '''
 
     def __init__(self,capteursFactory, actionneursFactory):
@@ -75,9 +100,9 @@ class PageIndex(resource.Resource):
         resource.Resource.__init__(self)
         
 
-    def renderIndexAdmin(self):
+    def renderRuleCreationAdmin(self):
         '''
-        Creation de la page admin - Index 
+        Creation de la page admin - RuleCreation 
         /admin
         '''
         headerFile = open("../ClientPC/header.html")
@@ -115,9 +140,9 @@ class PageIndex(resource.Resource):
             
             # Image du capteur
             if capteur.type == 'T':
-                page += """<img class="img_capteur" src="Thermometer_1_24282.png"> """
+                page += """<img class="img_capteur" src="images/Thermometer_1_24282.png"> """
             elif capteur.type == 'P':
-                page += """<img class="img_capteur" src="bulb.png">"""
+                page += """<img class="img_capteur" src="images/bulb.png">"""
                 
             # Valeur Nom du capteur
             page += """<div class="nom_capteur">""" + str(capteur.nom) + """</div>"""              
@@ -145,7 +170,7 @@ class PageIndex(resource.Resource):
             page +=  """<li id=\"""" + str(actionneur.id) +  """\" class="capteur">"""
             
             # Image de l'actionneur
-            page += """<img class="img_capteur" src="C315b.png"> """
+            page += """<img class="img_capteur" src="images/C315b.png"> """
                 
             # Valeur Nom de l'actionneur
             page += """<div class="nom_capteur">""" + str(actionneur.nom) + """</div>"""              

@@ -45,7 +45,8 @@ if __name__ == '__main__':
     root.putChild('', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('capteurs', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('stat', StatistiqueHTML())
-    root.putChild('admin', AdminHTML(capteursFactory, actionneursFactory))
+    root.putChild('rules', Rules(capteursFactory, actionneursFactory))
+    root.putChild('createrule', CreateRule(capteursFactory, actionneursFactory))
     root.putChild('form', Form(ensembleRules, transport))    
     
     log.startLogging(sys.stdout)
