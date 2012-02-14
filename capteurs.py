@@ -17,11 +17,13 @@ class CapteursHTML(resource.Resource):
         '''
         Methode de reponse pour localhost:8000/capteurs/
         '''
-        # self.transport.getAllDevices(self.factoryCapteurs, self.factoryActionneurs)
+        self.transport.getAllDevices(self.factoryCapteurs, self.factoryActionneurs)
+
         
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
         headerHtml = headerHtml.replace("$STYLE$", "core_capteurs.css")
+        headerHtml = headerHtml.replace("$JS_TO_INCLUDE$", "client_capteurs_script.js")
         headerFile.close()      
         
         capteurFile = open("../ClientPC/core_capteurs.html")
@@ -68,11 +70,12 @@ class CapteursFactory():
     '''
     
     def __init__(self):
-        ''' Methode Initialisation de la classe '''
+        ''' Methode Initialisation de la classe CapteursFactory '''
         capteur1 = Capteur(12, 'Salon', 'T', 15)
         capteur2 = Capteur(2, 'Chambre', 'P', 35)
         capteur3 = Capteur(3, 'Salle de bain', 'T', 20)
         self.capteurs=[capteur1, capteur2, capteur3]
+        #self.capteurs = []
         
         
     
@@ -83,7 +86,7 @@ class CapteursFactory():
         if capteur.id not in self.getIDCapteurs():
             self.capteurs.append(capteur)
         else:
-            modifierCapteur(capteur.id, capteur.data)
+            self.modifierCapteur(capteur.id, capteur.data)
         
         
     def supprimerCapteur(self, idC):
@@ -147,4 +150,4 @@ class AllDevices(resource.Resource):
         resource.Resource.__init__(self)
 
     def render_GET(self, request):
-	    return "essai"
+        return "essai"

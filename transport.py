@@ -27,6 +27,7 @@ class TransportGHome():
         
         # Reception Message : Parsage
         msgRcv = self.transport.receiveMsg()
+        print msgRcv
         dataMsg = json.loads(msgRcv)
         if dataMsg["msgType"] == "R_getAllDevices":
             for capteur in dataMsg["sensors"]:
@@ -69,6 +70,12 @@ class TransportGHome():
         Envoi d'une regle au serveur C
         '''
         self.transport.sendMsg(regle)
+        
+    def receiveAnswer(self):
+        '''
+        Reception d'un message par le serveur C
+        '''
+        return self.transport.receiveMsg()
         
         
     def decode(self, msg):

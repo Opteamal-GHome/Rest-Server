@@ -1,4 +1,4 @@
-from twisted.web import resource
+from twisted.web import resource, http, server
 import netifaces as ni
 
 class AdminHTML(resource.Resource):
@@ -108,11 +108,12 @@ class RuleCreation(resource.Resource):
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
         headerHtml = headerHtml.replace("$STYLE$", "core_admin.css")
+        headerHtml = headerHtml.replace("$JS_TO_INCLUDE$", "client_admin_script.js")
         headerFile.close()      
         
-        adminFile = open("../ClientPC/core_admin.html")
+        adminFile = open("/home/tommi/INSA/4IF/GHome/ClientPC/core_admin.html")
         adminHtml = adminFile.read()
-        adminHtml = adminHtml.replace("$IPSERVEUR$", str(ni.ifaddresses('wlan0')[2][0]['addr'])+":8080")
+        adminHtml = adminHtml.replace("$IPSERVEUR$", str(ni.ifaddresses('eth0')[2][0]['addr'])+":8080")
         adminHtml = adminHtml.replace("$LISTECAPTEURS$", self.renderListeCapteursExistants())
         adminHtml = adminHtml.replace("$LISTEACTIONNEURS$", self.renderListeActionneursExistants())
         adminFile.close()
