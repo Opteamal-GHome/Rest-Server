@@ -104,7 +104,7 @@ class PageIndex(resource.Resource):
         '''
         Modification de la page corps_admin pour ajouter les capteurs
         <li id="2" class="capteur">
-             <img class="img_capteur" src="Thermometer_1_24282.png"> 
+             <img class="img_capteur" src="images/Thermometer_1_24282.png"> 
              <div class="nom_capteur">Salon</div>
         </li>
         '''
@@ -116,9 +116,9 @@ class PageIndex(resource.Resource):
             
             # Image du capteur
             if capteur.type == 'T':
-                page += """<img class="img_capteur" src="Thermometer_1_24282.png"> """
+                page += """<img class="img_capteur" src="images/Thermometer_1_24282.png"> """
             elif capteur.type == 'P':
-                page += """<img class="img_capteur" src="bulb.png">"""
+                page += """<img class="img_capteur" src="images/bulb.png">"""
                 
             # Valeur Nom du capteur
             page += """<div class="nom_capteur">""" + str(capteur.nom) + """</div>"""              
@@ -135,7 +135,7 @@ class PageIndex(resource.Resource):
         '''
         Modification de la page corps_admin pour ajouter les actionneurs
         <li id="2" class="capteur">
-             <img class="img_capteur" src="C315b.png"> 
+             <img class="img_capteur" src="images/C315b.png"> 
              <div class="nom_capteur">Salon</div>
         </li>
         '''
@@ -146,7 +146,7 @@ class PageIndex(resource.Resource):
             page +=  """<li id=\"""" + str(actionneur.id) +  """\" class="capteur">"""
             
             # Image de l'actionneur
-            page += """<img class="img_capteur" src="C315b.png"> """
+            page += """<img class="img_capteur" src="images/C315b.png"> """
                 
             # Valeur Nom de l'actionneur
             page += """<div class="nom_capteur">""" + str(actionneur.nom) + """</div>"""              

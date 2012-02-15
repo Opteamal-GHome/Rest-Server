@@ -1,33 +1,40 @@
 from rule import Rule
 from transport import TransportGHome
 import json
+from twisted.internet import task
 
-from websocket import *
+from twisted.internet import reactor
+from twisted.web.static import File
 
-class WebSocketInit (WebSocketSite):
-    '''
-    Initialisation des webSockets
-    '''
-    def __init__(self, resource):
-        WebSocketSite.__init__(self, resource)
+from autobahn.websocket import WebSocketServerFactory, WebSocketServerProtocol, listenWS
 
 
-class WebSocketForm (WebSocketHandler):
-    '''
-    Reception des trames JSON et re-envoi via les websockets conformement au protocole defini.
-    '''
-    def __init__(self, tran):
-        WebSocketHandler.__init__(self, tran)
-        # Socket vers le serveur C
-        self.socketG = TransportGHome
 
+class WebSocketForm (WebSocketServerProtocol):
     
-    def send(self, msgJSON):
-        """
-        Envoie un message JSON au client.
-        """
-        self.transport.write(json.dumps(msgJSON))
+    def onMessage(self, msg, binary):
+        print 'reception'
+        msg = json.loads(msg)
+        print msg["type"]
+        self.sendMessage("Ca marche", binary)
+
         
+    ###### RECEPTION DU CLIENT ######
+    
+    def decode(self, data):
+        '''
+        Decode le tableau recu
+        '''
+        if (data["type"] == "newRule"):
+            # Nouvelle regle donnee par le client ; A envoyer au serveur GHome
+            self.msgNewRuleC(data)    
+        elif (data["type"] == "supprRule"):
+            # Suppression d'une regle
+            nomRule = data["ruleName"]
+            self.ensembleRules.supprimerRule(nomRule)
+        #elif (data["type"] == "getStatTemp"):
+            
+    
     def msgNewRuleC (self, data):
         '''
         Cree une nouvelle regle et l'envoie au serveur C
@@ -50,32 +57,27 @@ class WebSocketForm (WebSocketHandler):
         self.socketG.sendRule(jsonMsg)
         
         # Reception de la reponse
-        print self.socketG.receiveAnswer()
+        print self.socketG.receiveAnswer()    
+        
+        
+    ###### VERS LE CLIENT ######
     
-    def decode(self, data):
+    
+    def changedDevice(self, idD, data):
         '''
-        Decode le tableau recu
+        Envoye a l'utilisateur via les websockets lorsque la valeur d'un device a change
         '''
-        if (data["type"] == "newRule"):
-            # Nouvelle regle donnee par le client ; A envoyer au serveur GHome
-            self.msgNewRuleC(data)    
-        elif (data["type"] == "supprRule"):
-            # Suppression d'une regle
-            nomRule = data["ruleName"]
-            self.ensembleRules.supprimerRule(nomRule)
+        data = {}
+        data["msgType"] = "device_updated"
+        data["id"] = idD
+        data["data"] = data
+        self.send(data)
+        
+        
             
+            
+    ###### WEBSOCKETS OUTILS ######
+               
 
 
-    def frameReceived(self, frame):
-        #Called by the websocket library when a new frame is received.
-        self.decode(json.loads(frame))
-        
-       
-    def connectionMade(self):
-        #Called by the websocket library when the connection with the client has been established.
-        print 'Connected to client.'
-        
-
-    def connectionLost(self, reason):
-        #Called by the websocket library, the connection has been lost
-        print 'Deconnected of client'
+    

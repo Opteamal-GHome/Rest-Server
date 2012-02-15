@@ -62,7 +62,23 @@ class TransportGHome():
                     tab.modifierCapteur(idDevice,dataMsg["data"])
                 elif dataMsg["typeDevice"] == "actuator":
                     tab.modifierActionneur(idDevice, dataMsg["data"])
-                
+     
+    def getAllRules(self, ensRules):
+        '''
+        Demande au serveur C l'ensemble des regles enregistrees
+        '''     
+        # Message d'envoi       
+        data = {}
+        data["msgType"] = "getAllRules"
+        jsonData = str(data)
+        
+        # Envoi message
+        self.transport.sendMsg(jsonData)
+        
+        # Reception message
+        msgRcv = self.transport.receiveMsg()
+        dataMsg = json.loads(msgRcv)
+        
         
                 
     def sendRule(self, regle):
