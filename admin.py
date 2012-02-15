@@ -29,8 +29,6 @@ class AdminHTML(resource.Resource):
         
         
     
-   
-
      
         
 class CreateRule(resource.Resource):
@@ -61,12 +59,39 @@ class CreateRule(resource.Resource):
         
         
         
+class Rules(resource.Resource):
+    '''
+    Classe appelee pour admin/rules
+    '''
+
+    def __init__(self,capteursFactory, actionneursFactory):
+        resource.Resource.__init__(self)
+        self.capteursFactory = capteursFactory
+        self.actionneursFactory = actionneursFactory
+        
+    def render_GET(self, request):
+        '''
+        Methode de reponse a localhost:5000/admin/rules
+        Cree un objet de type PageIndex et renvoie la page principale
+        '''       
+        index = PageIndex(self.capteursFactory, self.actionneursFactory)
+        return index.renderIndexAdmin()
+        
+            
+    def getChild(self, path, request):
+        return ""
+        
+        
+    def render_POST(self, request):
+        return self.render_GET(request)
+        
+           
         
 
 
-class PageIndex(resource.Resource):
+class RuleCreation(resource.Resource):
     '''
-    Page Index
+    Page Creation Regles
     '''
 
     def __init__(self,capteursFactory, actionneursFactory):
@@ -75,9 +100,9 @@ class PageIndex(resource.Resource):
         resource.Resource.__init__(self)
         
 
-    def renderIndexAdmin(self):
+    def renderRuleCreationAdmin(self):
         '''
-        Creation de la page admin - Index 
+        Creation de la page admin - RuleCreation 
         /admin
         '''
         headerFile = open("../ClientPC/header.html")
