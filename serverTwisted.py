@@ -12,7 +12,7 @@ from capteurs import CapteursHTML, CapteursFactory
 from admin import *
 from statistique import StatistiqueHTML
 from socketDonneeGHome import *
-from form import WebSocketForm
+from form import *
 from transport import TransportGHome
 import constantes
 
@@ -26,12 +26,15 @@ if __name__ == '__main__':
     # Objets requis par le serveur
     capteursFactory = CapteursFactory()
     actionneursFactory = ActionneursFactory()
-    ensembleRules = Rules()
+    #ensembleRules = Rules()
     
     # Serveur WebSockets
-    factory = WebSocketServerFactory("ws://localhost:9000", debug = False)
-    factory.protocol = WebSocketForm
+    #wsForm = WebSocketForm(ensembleRules)
+    
+    factory = WebSocketFactory("ws://localhost:9000")
     listenWS(factory)
+    
+    ensembleRules = factory.getEnsRules()
         
     # Thread sur le socket data
     #socketData = SocketDataGHome(capteursFactory, actionneursFactory, WebSocketForm)
