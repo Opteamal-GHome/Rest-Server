@@ -17,8 +17,6 @@ class WebSocketForm (WebSocketServerProtocol):
         #print msg["type"]
         self.factory.decode(msg)
         #self.sendMessage("Ca marche", binary)
-
-
                
 
 

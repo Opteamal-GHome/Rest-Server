@@ -11,8 +11,7 @@ class TCPServer(SocketServer.BaseRequestHandler) :
     def __init__(self, factoryCapteurs, factoryActionneurs, ws):
         self.capteursFactory = factoryCapteurs
         self.actionneursFactory = factoryActionneurs
-        self.ws = ws
-        
+        self.ws = ws        
     
     def setup(self):
         print self.client_address, 'connected!'
