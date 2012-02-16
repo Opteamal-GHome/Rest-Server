@@ -83,7 +83,8 @@ class CapteursFactory():
         Retourne le capteur designe par l'idC en parametre
         '''
         for capteur in self.capteurs:
-            if (capteur.id == idC):
+            print 'log capt : ' + str(capteur.id) + " / " + str(idC)
+            if (str(capteur.id) == str(idC)):
                 return capteur
     
     def ajouterCapteur(self, capteur):
