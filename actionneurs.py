@@ -10,6 +10,14 @@ class ActionneursFactory():
         self.actionneurs=[actionneur1, actionneur2]
         #self.actionneurs = []
         
+    def getActionneur (self, idA):
+        ''' 
+        Retourne le capteur designe par l'idC en parametre
+        '''
+        for actionneur in self.actionneurs:
+            if (str(actionneur.id) == str(idA)):
+                return actionneur
+        
         
     def ajouterActionneur(self, actionneur):
         '''
