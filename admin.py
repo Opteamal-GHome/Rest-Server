@@ -21,70 +21,80 @@ class DisplayRules(resource.Resource):
         reponse = ""
         
         reponse += """<ul id="liste_regles">"""
-	
-	    # On tourne sur les regles existantes
+
+        # On tourne sur les regles existantes
         for rule in self.ensembleRules.rules:
-	        reponse += """<li class="regle_desc">
+            reponse += """<li class="regle_desc">
 			    <div class="top_regle">""" + str(rule.name)
-			    
-	        reponse += """<img class="btn_close_regle" src="images/moblin-close2.png">"""
-			
-	        reponse += """</div>
+                    
+            reponse += """<img class="btn_close_regle" src="images/moblin-close2.png">"""
+
+            reponse += """</div>
 			
 			    <div class="corps_regle">
 				    <ul class="liste_conditions">"""
-				    
-		    # On tourne sur les conditions d'une regle
-	        for condition in rule.conditions:
-		        reponse += """
+   
+            # On tourne sur les conditions d'une regle
+            for condition in rule.conditions:
+                reponse += """
 					    <li class="ligne_regle">
 						    <div class="capteur">"""
-				
-				# On envoie la bonne image par rapport au type de l'operateur de gauche
-		        capteur = self.capteursFactory.getCapteur(condition.leftOp)
-		        if capteur.type == 'T':
-		            reponse += """<img class="img_capteur" src="images/Thermometer_1_24282.png"> """
-		        elif capteur.type == 'P':
-		            reponse += """<img class="img_capteur" src="images/bulb.png">"""
+
+                # On envoie la bonne image par rapport au type de l'operateur de gauche
+                capteur = self.capteursFactory.getCapteur(condition.leftOp)
+                print capteur.type
+                if capteur.type == 'T':
+                    reponse += """<img class="img_capteur" src="images/Thermometer_1_24282.png"> """
+                elif capteur.type == 'P':
+                    reponse += """<img class="img_capteur" src="images/bulb.png">"""
 
                 # Operateur de gauche
                 reponse += """<div class="nom_capteur">""" + str(capteur.nom) + """</div>
 						    </div>"""
-						    
-			    # Operateur du milieu
+    
+                # Operateur du milieu
                 if condition.type == 'inf':
-			        reponse += """<div class="operateur" title=\"""" + str(condition.type) + """\"><</div>"""
+                    reponse += """<div class="operateur" title=\"""" + str(condition.type) + """\"><</div>"""
                 elif condition.type == 'equ':
-			        reponse += """<div class="operateur" title=\"""" + str(condition.type) + """\">=</div>"""
+                    reponse += """<div class="operateur" title=\"""" + str(condition.type) + """\">=</div>"""
                 elif condition.type == 'sup':
-			        reponse += """<div class="operateur" title=\"""" + str(condition.type) + """\">></div>"""
-			    
-			    
-			    # Operateur de droite : TODO Voir pour les capteurs a droite
+                    reponse += """<div class="operateur" title=\"""" + str(condition.type) + """\">></div>"""
+    
+    
+                # Operateur de droite : TODO Voir pour les capteurs a droite
                 reponse += """<div class="value_condition">""" + str(condition.rightOp) + """</div>"""
-			    
-			    
+  
                 reponse += """</li>"""
-			
-			# Fin des conditions
-	        reponse += """</ul>"""	
-				
-		    # Affichage de la fleche
-	        reponse += """ <img class="fleche_implique" src="images/arrow black2.gif">"""
-		    
-		    # Affichage des actions
-	        reponse += """<div class="pres_action">"""
-	        for action in self.actionneursFactory:
-		        reponse += """<div class="capteur">
-						    <img class="img_capteur" src="C315b.png"> 
-						    <div class="nom_capteur">""" + str(action.name) + """</div>
-					    </div>
-				    </div>
-				    <div style="clear:both"></div>
-			    </div>
-		    </li>"""
-		    
-		reponse += """</ul>"""
+
+            # Fin des conditions
+            reponse += """</ul>"""	
+
+            # Affichage de la fleche
+            reponse += """ <img class="fleche_implique" src="images/arrow black2.gif">"""
+
+            # Affichage des actions
+            reponse += """<div class="pres_action">"""
+            action = self.actionneursFactory.getActionneur(rule.actions[0].actuator)
+            #for action in self.actionneursFactory.actionneurs:
+            reponse += """<div class="capteur">
+					    <img class="img_capteur" src="images/C315b.png"> 
+					    <div class="nom_capteur">""" + str(action.nom) + """</div>
+				        </div>"""
+
+            # Fin de la pres_action
+            reponse += """</div>"""
+            
+            # Fin du bloc regle
+            reponse += """<div style="clear:both"></div>
+                </div>"""
+            
+            # Fin de la ligne regle
+            reponse += """</li>"""
+            
+            
+   
+        # Fin de la liste des regles
+        reponse += """</ul>"""
         
         
         return reponse
@@ -163,7 +173,7 @@ class CreateRule(resource.Resource):
         
         adminFile = open("/home/tommi/INSA/4IF/GHome/ClientPC/core_admin.html")
         adminHtml = adminFile.read()
-        adminHtml = adminHtml.replace("$IPSERVEUR$", str(ni.ifaddresses('wlan0')[2][0]['addr'])+":8080")
+        adminHtml = adminHtml.replace("$IPSERVEUR$", str(ni.ifaddresses('eth0')[2][0]['addr'])+":8080")
         adminHtml = adminHtml.replace("$LISTECAPTEURS$", self.renderListeCapteursExistants())
         adminHtml = adminHtml.replace("$LISTEACTIONNEURS$", self.renderListeActionneursExistants())
         adminFile.close()
