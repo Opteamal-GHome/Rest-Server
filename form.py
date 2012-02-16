@@ -76,6 +76,8 @@ class WebSocketFactory (WebSocketServerFactory):
         #print self.socketG.receiveAnswer()
         
         
+        
+        
     ###### VERS LE CLIENT ######
     
     
@@ -87,7 +89,7 @@ class WebSocketFactory (WebSocketServerFactory):
         data["msgType"] = "device_updated"
         data["id"] = idD
         data["data"] = data
-        self.send(data)
+        self.sendMessage(data)
         
         
             

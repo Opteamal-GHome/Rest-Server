@@ -1,5 +1,6 @@
 from twisted.web import resource, http, server
 import netifaces as ni
+import constantes
 
 
 class DisplayRules(resource.Resource):
@@ -104,6 +105,7 @@ class DisplayRules(resource.Resource):
         headerHtml = headerFile.read()
         headerHtml = headerHtml.replace("$STYLE$", "core_admin.css")
         headerHtml = headerHtml.replace("$JS_TO_INCLUDE$", "client_admin_script.js")
+        headerHtml = headerHtml.replace("$IPSERVEUR$", str(ni.ifaddresses(constantes.typeLiaison)[2][0]['addr'])+":" + str(constantes.portServeurWeb))
         headerFile.close()      
         
         corpsHtml = self.corpsDisplayRules()
@@ -169,11 +171,11 @@ class CreateRule(resource.Resource):
         headerHtml = headerFile.read()
         headerHtml = headerHtml.replace("$STYLE$", "core_admin.css")
         headerHtml = headerHtml.replace("$JS_TO_INCLUDE$", "client_admin_script.js")
+        headerHtml = headerHtml.replace("$IPSERVEUR$", str(ni.ifaddresses(constantes.typeLiaison)[2][0]['addr'])+":" + str(constantes.portServeurWeb))
         headerFile.close()      
         
         adminFile = open("/home/tommi/INSA/4IF/GHome/ClientPC/core_admin.html")
         adminHtml = adminFile.read()
-        adminHtml = adminHtml.replace("$IPSERVEUR$", str(ni.ifaddresses('eth0')[2][0]['addr'])+":8080")
         adminHtml = adminHtml.replace("$LISTECAPTEURS$", self.renderListeCapteursExistants())
         adminHtml = adminHtml.replace("$LISTEACTIONNEURS$", self.renderListeActionneursExistants())
         adminFile.close()

@@ -4,3 +4,5 @@ portServeurGHome = 8080
 portServerData = 421
 
 portServeurWeb = 8080
+
+typeLiaison = "eth0"

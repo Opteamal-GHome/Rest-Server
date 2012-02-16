@@ -37,9 +37,9 @@ if __name__ == '__main__':
     ensembleRules = factory.getEnsRules()
         
     # Thread sur le socket data
-    #socketData = SocketDataGHome(capteursFactory, actionneursFactory, WebSocketForm)
-    #a = threading.Thread(None, socketData.connect, "Server Data", (), None)
-    #a.start()
+    socketData = SocketDataGHome(capteursFactory, actionneursFactory, factory)
+    a = threading.Thread(None, socketData.connect, "Server Data", (), None)
+    a.start()
     
     time.sleep(1)
     
@@ -60,5 +60,5 @@ if __name__ == '__main__':
 
     
     # Serveur Web
-    reactor.listenTCP(421, server) #@UndefinedVariable
+    reactor.listenTCP(constantes.portServeurWeb, server) #@UndefinedVariable
     reactor.run() #@UndefinedVariable

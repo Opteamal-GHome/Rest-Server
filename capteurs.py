@@ -1,4 +1,6 @@
 from twisted.web import resource
+import netifaces as ni
+import constantes
 
 class CapteursHTML(resource.Resource):
     '''
@@ -24,6 +26,7 @@ class CapteursHTML(resource.Resource):
         headerHtml = headerFile.read()
         headerHtml = headerHtml.replace("$STYLE$", "core_capteurs.css")
         headerHtml = headerHtml.replace("$JS_TO_INCLUDE$", "client_capteurs_script.js")
+        headerHtml = headerHtml.replace("$IPSERVEUR$", str(ni.ifaddresses(constantes.typeLiaison)[2][0]['addr'])+":" + str(constantes.portServeurWeb))
         headerFile.close()      
         
         capteurFile = open("../ClientPC/core_capteurs.html")
@@ -47,7 +50,7 @@ class CapteursHTML(resource.Resource):
         page = ""
         for capteur in self.factoryCapteurs.capteurs:
             # Nom du capteur
-            page +=  """<div class="capteur">
+            page +=  """<div id=\"""" + str(capteur.id) + """\" class="capteur">
             <div class="nom_capteur">""" + str(capteur.nom) + """</div>"""
             
             # Image du capteur
