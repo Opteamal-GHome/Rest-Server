@@ -1,4 +1,4 @@
-from rule import Rule
+from rule import *
 from transport import TransportGHome
 import json
 from twisted.internet import task
@@ -9,21 +9,32 @@ from twisted.web.static import File
 from autobahn.websocket import WebSocketServerFactory, WebSocketServerProtocol, listenWS
 
 
-
-class WebSocketForm (WebSocketServerProtocol):
-
-    def __init__(self, ensRules):
-        self.ensembleRules = ensRules
-    
+class WebSocketForm (WebSocketServerProtocol):   
     
     def onMessage(self, msg, binary):
         print 'reception'
         msg = json.loads(msg)
         #print msg["type"]
-        self.decode(msg)
+        self.factory.decode(msg)
         #self.sendMessage("Ca marche", binary)
 
+
+               
+
+
+class WebSocketFactory (WebSocketServerFactory):
+    protocol = WebSocketForm   
+
+    def __init__(self, url):
+        WebSocketServerFactory.__init__(self, url)
         
+        # Creation d'un nouveau tableau de rule
+        self.ensembleRules = Rules()
+        
+        
+    def getEnsRules(self):
+        return self.ensembleRules
+                
     ###### RECEPTION DU CLIENT ######
     
     def decode(self, data):
@@ -59,10 +70,10 @@ class WebSocketForm (WebSocketServerProtocol):
         print jsonMsg
         
         # Envoi de la regle au serveur C
-        self.socketG.sendRule(jsonMsg)
+        #self.socketG.sendRule(jsonMsg)
         
         # Reception de la reponse
-        print self.socketG.receiveAnswer()    
+        #print self.socketG.receiveAnswer()
         
         
     ###### VERS LE CLIENT ######
@@ -82,7 +93,3 @@ class WebSocketForm (WebSocketServerProtocol):
             
             
     ###### WEBSOCKETS OUTILS ######
-               
-
-
-    
