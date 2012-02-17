@@ -27,11 +27,11 @@ class WebSocketFactory (WebSocketServerFactory):
         WebSocketServerFactory.__init__(self, url)
         
         # Creation d'un nouveau tableau de rule
-        self.ensembleRules = Rules()
+        #self.ensembleRules = Rules()
         
         
-    def getEnsRules(self):
-        return self.ensembleRules
+    #def getEnsRules(self):
+        #return self.ensembleRules
                 
     ###### RECEPTION DU CLIENT ######
     
@@ -68,11 +68,13 @@ class WebSocketFactory (WebSocketServerFactory):
         print jsonMsg
         
         # Envoi de la regle au serveur C
-        #self.socketG.sendRule(jsonMsg)
+        self.socketG.sendRule(jsonMsg)
         
         # Reception de la reponse
-        #print self.socketG.receiveAnswer()
-        
+        answer = self.socketG.receiveAnswer()
+        answer = json.loads(answer)
+        if answer["msgType"] == "R_newRule":
+            self.msgAnswer(answer["status"], answer["error"])
         
         
         
@@ -89,7 +91,24 @@ class WebSocketFactory (WebSocketServerFactory):
         data["data"] = data
         self.sendMessage(data)
         
+    def msgAnswer(self, status, error):
+        data = {}
+        data["msgType"] = "answerRule"
+        data["status"] = str(status)
+        data["error"] = str(error)
+        self.sendMessage(data)
         
+        
+    def sendTemperature(self, idC):
+        data = {}
+        data["msgType"] = "tabStat"
+        data["typeStat"] = "T"
+        data["data"] = []
+        
+        # On va chercher le capteur concerne par la temperature
+        capteur = self.capteursFactory.getCapteur(idC)
+        for donnee in capteur.data:
+            data["data"].append(donnee)
             
-            
-    ###### WEBSOCKETS OUTILS ######
+        self.sendMessage(data)
+        
