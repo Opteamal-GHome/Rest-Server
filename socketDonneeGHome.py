@@ -1,29 +1,32 @@
-import SocketServer
 import constantes, json
+
+from twisted.internet.protocol import Protocol, Factory
 
 from form import WebSocketForm
 
-class TCPServer(SocketServer.BaseRequestHandler) :
+class SocketDataGHome(Protocol) :
     '''
     Client Socket to connect to server GHome developped with C language.
     '''
+                
+    def dataReceived(self, data):
+        print 'Data Socket Data : ' + str(data)
+        self.factory.decode(data)
+
+        
+
+
+class SocketDataGHomeFactory(Factory):
     
-    def __init__(self, factoryCapteurs, factoryActionneurs, ws):
+    protocol = SocketDataGHome
+
+    def __init__(self, factoryCapteurs, factoryActionneurs, form):
+        self.port = constantes.portServerData
         self.capteursFactory = factoryCapteurs
         self.actionneursFactory = factoryActionneurs
-        self.ws = ws        
-    
-    def setup(self):
-        print self.client_address, 'connected!'
+        self.ws = form
+        print 'Initialisation du socket Data GHome'
         
-    def handle(self):
-        # self.request is the TCP socket connected to the client
-        self.data = self.request.recv(1024)
-        print "{} wrote:".format(self.client_address[0])
-        print self.data
-
-    def finish(self):
-        print self.client_address, 'disconnected!'
         
     def decode(self, msg):
         data = json.loads(msg)
@@ -34,22 +37,3 @@ class TCPServer(SocketServer.BaseRequestHandler) :
                 self.actionneursFactory.modifierActionneur(data["id"], data["data"])
                 
             self.ws.changedDevice(data["id"], data["data"])
-
-
-class SocketDataGHome:
-
-    def __init__(self, factoryCapteurs, factoryActionneurs, form):
-        self.port = constantes.portServerData
-        self.capteursFactory = factoryCapteurs
-        self.actionneursFactory = factoryActionneurs
-        self.ws = WebSocketForm
-        
-        
-    def connect(self):
-        server = SocketServer.ThreadingTCPServer(('', self.port), TCPServer(self.capteursFactory, self.actionneursFactory, self.ws))
-        
-        print 'Serveur TCP Data demarre sur le port ' + str(constantes.portServerData)
-        
-        # Activate the server; this will keep running until you
-        # interrupt the program with Ctrl-C
-        server.serve_forever(1)
