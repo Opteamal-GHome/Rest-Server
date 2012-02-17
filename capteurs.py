@@ -51,7 +51,7 @@ class CapteursHTML(resource.Resource):
         for capteur in self.factoryCapteurs.capteurs:
             # Nom du capteur
             page +=  """<div id=\"""" + str(capteur.id) + """\" class="capteur">
-            <div class="nom_capteur">""" + str(capteur.nom) + """</div>"""
+            <input type="text" class="nom_capteur" value=""" + str(capteur.nom) + """/>"""
             
             # Image du capteur
             if capteur.type == 'T':
