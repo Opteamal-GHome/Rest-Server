@@ -16,7 +16,7 @@ from form import *
 from transport import TransportGHome
 import constantes
 
-import threading, time
+import time
 
 
 if __name__ == '__main__':
@@ -26,23 +26,21 @@ if __name__ == '__main__':
     # Objets requis par le serveur
     capteursFactory = CapteursFactory()
     actionneursFactory = ActionneursFactory()
-    #ensembleRules = Rules()
+    ensembleRules = Rules()
     
     # Serveur WebSockets
-    #wsForm = WebSocketForm(ensembleRules)
-    
     factory = WebSocketFactory("ws://localhost:9000")
     listenWS(factory)
     
-    ensembleRules = factory.getEnsRules()
+    factory.ensembleRules = ensembleRules
+    factory.capteursFactory = capteursFactory
+    factory.actionneursFactory = actionneursFactory
+    
+    #ensembleRules = factory.getEnsRules()
         
-    # Thread sur le socket data
-    socketData = SocketDataGHome(capteursFactory, actionneursFactory, factory)
-    a = threading.Thread(None, socketData.connect, "Server Data", (), None)
-    a.start()
-    
-    time.sleep(1)
-    
+    # Socket data    
+    reactor.listenTCP(constantes.portServerData, SocketDataGHomeFactory(capteursFactory, actionneursFactory, factory))
+        
     #transport = TransportGHome()
     transport = 2
     
