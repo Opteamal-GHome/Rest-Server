@@ -36,13 +36,13 @@ class WebSocketFactory (WebSocketServerFactory):
 
     def register(self, client):
         if not client in self.clients:
-             print "registered client " + client.peerstr
-             self.clients.append(client)
+            print "registered client " + client.peerstr
+            self.clients.append(client)
     
     def unregister(self, client):
         if client in self.clients:
-             print "unregistered client " + client.peerstr
-             self.clients.remove(client)
+            print "unregistered client " + client.peerstr
+            self.clients.remove(client)
              
     def broadcast(self, msg):
         print "broadcasting message '%s' .." % msg
@@ -57,20 +57,26 @@ class WebSocketFactory (WebSocketServerFactory):
         '''
         Decode le tableau recu
         '''
-        if (data["type"] == "newRule"):
+        if (data["msgType"] == "newRule"):
             # Nouvelle regle donnee par le client ; A envoyer au serveur GHome
             self.msgNewRuleC(data)    
-        elif (data["type"] == "supprRule"):
+        elif (data["msgType"] == "supprRule"):
             # Suppression d'une regle
             nomRule = data["ruleName"]
             self.ensembleRules.supprimerRule(nomRule)
-        #elif (data["type"] == "getStatTemp"):
+        elif (data["msgType"] == "rename_device"):
+            self.changeNameDevice(data)
         
     def changeNameDevice(self, data):
         '''
         Change le nom d'un device
         '''
+        capteurId = data["id"]
+        newName = data["name"]
         
+        capteur = self.capteursFactory.getCapteur(capteurId)
+        capteur.nom = newName
+        print 'Nom du capteur modifie'
             
     
     def msgNewRuleC (self, data):

@@ -41,8 +41,8 @@ if __name__ == '__main__':
     # Socket data    
     reactor.listenTCP(constantes.portServerData, SocketDataGHomeFactory(capteursFactory, actionneursFactory, factory))
         
-    transport = TransportGHome()
-    #transport = 2
+    #transport = TransportGHome()
+    transport = 2
     
     factory.socketG = transport
     

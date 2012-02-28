@@ -19,7 +19,7 @@ class CapteursHTML(resource.Resource):
         '''
         Methode de reponse pour localhost:8000/capteurs/
         '''
-        self.transport.getAllDevices(self.factoryCapteurs, self.factoryActionneurs)
+        #self.transport.getAllDevices(self.factoryCapteurs, self.factoryActionneurs)
 
         
         headerFile = open("../ClientPC/header.html")
@@ -49,9 +49,10 @@ class CapteursHTML(resource.Resource):
         '''
         page = ""
         for capteur in self.factoryCapteurs.capteurs:
+            print 'Capteur : ' + str(capteur.id)
             # Nom du capteur
             page +=  """<div id=\"""" + str(capteur.id) + """\" class="capteur">
-            <input type="text" class="nom_capteur" value=""" + str(capteur.nom) + """/>"""
+            <input type="text" class="nom_capteur" value=\"""" + str(capteur.nom) + """"/>"""
             
             # Image du capteur
             if capteur.type == 'T':
@@ -74,11 +75,11 @@ class CapteursFactory():
     
     def __init__(self):
         ''' Methode Initialisation de la classe CapteursFactory '''
-        #capteur1 = Capteur(12, 'Salon', 'T', 15)
-        #capteur2 = Capteur(2, 'Chambre', 'P', 35)
-        #capteur3 = Capteur(3, 'Salle de bain', 'T', 20)
-        #self.capteurs=[capteur1, capteur2, capteur3]
-        self.capteurs = []
+        capteur1 = Capteur(12, 'Salon', 'T', 15)
+        capteur2 = Capteur(2, 'Chambre', 'P', 35)
+        capteur3 = Capteur(3, 'Salle de bain', 'T', 20)
+        self.capteurs=[capteur1, capteur2, capteur3]
+        #self.capteurs = []
         
         
     def getCapteur (self, idC):
@@ -105,19 +106,30 @@ class CapteursFactory():
         Suppression du capteur dont l'id est passe en parametre
         '''
         for capteur in self.capteurs :
-            if capteur.id == idC:
+            if str(capteur.id) == str(idC):
                 self.capteurs.remove(capteur)
             
     def modifierCapteur(self, idC, dataC):
         '''
-        Modifie la valeur du capteur identifie par un id et une donnee
+        Modifie la valeur du capteur identifie par un id
         '''
         trouve = False
         for capteur in self.capteurs :
-            if capteur.id == idC:
+            if str(capteur.id) == str(idC):
                 trouve = True
                 capteur.data.append(dataC)
         
+        return trouve
+    
+    def modifierNomCapteur(self, idC, nouveauNom):
+        '''
+        Modifie le nom du capteur identifie par un id
+        '''
+        trouve = False
+        for capteur in self.capteurs :
+            if str(capteur.id) == str(idC):
+                trouve = True
+                capteur.nom = nouveauNom
         return trouve
     
     def nbCapteurs(self):
