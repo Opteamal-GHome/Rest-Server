@@ -86,42 +86,49 @@ class WebSocketFactory (WebSocketServerFactory):
         '''
         Cree une nouvelle regle et l'envoie au serveur C
         '''
-        rule = Rule(data["rule"])     
-        rule.priority = "1"
-        rule.name = rule.name
-        jsonMsg = rule.createJsonRule()
+        rule = Rule(data["rule"])  
         
-        jsonMsg = jsonMsg.replace('"type": u', '"type": ');
-        jsonMsg = jsonMsg.replace('"rightOp": u', '"rightOp": ');
-        jsonMsg = jsonMsg.replace('"leftOp": u', '"leftOp": ');
-        jsonMsg = jsonMsg.replace('"actuator": u', '"actuator": ');
-        jsonMsg = jsonMsg.replace('"value": u', '"value": ');
-        jsonMsg = jsonMsg.replace('"ruleName": u', '"ruleName": ');
-        
-        print jsonMsg
-        
-        # Envoi de la regle au serveur C
-        self.socketG.sendRule(jsonMsg)
-        
-        # Reception de la reponse
-        answer = self.socketG.receiveAnswer()
-        print 'Answer : ' + str(answer)
-        answer = json.loads(answer)
-        if answer["msgType"] == "R_newRule":
-            if answer["status"] == "ACCEPTED":
-                # La regle a ete acceptee par le serveur
-                self.ensembleRules.ajouterRule(rule)
-                self.msgAnswer(answer["status"], "")
-            else:
-                # La regle a ete refusee par le serveur
-                self.msgAnswer(answer["status"], answer["error"])
+        # On regarde si la regle n'est pas correcte
+        if rule.error != "":
+            self.msgAnswer("REFUSED", rule.error)
+            
+        # Si elle est correcte, on l'envoie au serveur C
+        else:
+            rule.priority = "1"
+            rule.name = rule.name
+            jsonMsg = rule.createJsonRule()
+            
+            jsonMsg = jsonMsg.replace('"type": u', '"type": ');
+            jsonMsg = jsonMsg.replace('"rightOp": u', '"rightOp": ');
+            jsonMsg = jsonMsg.replace('"leftOp": u', '"leftOp": ');
+            jsonMsg = jsonMsg.replace('"actuator": u', '"actuator": ');
+            jsonMsg = jsonMsg.replace('"value": u', '"value": ');
+            jsonMsg = jsonMsg.replace('"ruleName": u', '"ruleName": ');
+            
+            print jsonMsg
+            
+            # Envoi de la regle au serveur C
+            self.socketG.sendRule(jsonMsg)
+            
+            # Reception de la reponse
+            answer = self.socketG.receiveAnswer()
+            print 'Answer : ' + str(answer)
+            answer = json.loads(answer)
+            if answer["msgType"] == "R_newRule":
+                if answer["status"] == "ACCEPTED":
+                    # La regle a ete acceptee par le serveur
+                    self.ensembleRules.ajouterRule(rule)
+                    self.msgAnswer(answer["status"], "")
+                else:
+                    # La regle a ete refusee par le serveur
+                    self.msgAnswer(answer["status"], answer["error"])
         
         
         
     ###### VERS LE CLIENT ######
     
     
-    def changedDevice(self, idD, donnee):
+    def changedDevice(self, idD, typeD, donnee):
         '''
         Envoye a l'utilisateur via les websockets lorsque la valeur d'un device a change
         '''

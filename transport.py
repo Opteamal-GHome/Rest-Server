@@ -32,11 +32,23 @@ class TransportGHome():
         if dataMsg["msgType"] == "R_getAllDevices":
             for capteur in dataMsg["sensors"]:
                 capteur1 = Capteur(capteur["id"], "", capteur["type"], capteur["data"])
-                capts.ajouterCapteur(capteur1)
+                
+                # Si le capteur n'existe pas deja, on l'ajoute
+                if (capts.getCapteur(capteur["id"]) == None):
+                    capts.ajouterCapteur(capteur1)
+                # Sinon, on le modifie
+                else:
+                    capts.modifierCapteur(capteur["id"], capteur["data"])
                 
             for actuator in dataMsg["actuators"]:
                 actuator1 = Actionneur(actuator["id"], "", actuator["type"], actuator["data"])
-                actuators.ajouterActionneur(actuator1) 
+                
+                # Si l'actionneur n'existe pas deja, on l'ajoute
+                if (actuators.getActionneur(actuator["id"]) == None):
+                    actuators.ajouterActionneur(actuator1)
+                # Sinon, on le modifie
+                else:
+                    actuators.modifierActionneur(actuator["id"], actuator["data"])
                 
     
     def getDevice(self, idDevice, tab):

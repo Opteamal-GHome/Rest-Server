@@ -70,4 +70,4 @@ class SocketDataGHomeFactory(Factory):
                     self.actionneursFactory.modifierActionneur(data["id"], data["data"])
         
             print 'Data : ' + data["data"]        
-            self.ws.changedDevice(data["id"], data["data"])
+            self.ws.changedDevice(data["id"], data["type"], data["data"])

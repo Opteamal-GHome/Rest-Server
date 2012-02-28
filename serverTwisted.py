@@ -14,6 +14,7 @@ from statistique import StatistiqueHTML
 from socketDonneeGHome import *
 from form import *
 from transport import TransportGHome
+from save_fichier import *
 import constantes
 
 import time
@@ -27,6 +28,10 @@ if __name__ == '__main__':
     capteursFactory = CapteursFactory()
     actionneursFactory = ActionneursFactory()
     ensembleRules = Rules()
+    
+    # Sauvegarde des regles
+    saveFichier = SaveFichier(ensembleRules)
+    
     
     # Serveur WebSockets
     factory = WebSocketFactory("ws://localhost:" + str(constantes.portWebSocket))
