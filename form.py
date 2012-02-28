@@ -117,6 +117,9 @@ class WebSocketFactory (WebSocketServerFactory):
             if answer["msgType"] == "R_newRule":
                 if answer["status"] == "ACCEPTED":
                     # La regle a ete acceptee par le serveur
+                    # On l'ajoute dans le fichier de sauvegarde des regles
+                    self.saveFichier.writeNouvelleRule(rule)
+                    
                     self.ensembleRules.ajouterRule(rule)
                     self.msgAnswer(answer["status"], "")
                 else:

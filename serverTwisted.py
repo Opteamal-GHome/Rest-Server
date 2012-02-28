@@ -31,7 +31,7 @@ if __name__ == '__main__':
     
     # Sauvegarde des regles
     saveFichier = SaveFichier(ensembleRules)
-    
+    saveFichier.recreateRules()
     
     # Serveur WebSockets
     factory = WebSocketFactory("ws://localhost:" + str(constantes.portWebSocket))
@@ -40,6 +40,7 @@ if __name__ == '__main__':
     factory.ensembleRules = ensembleRules
     factory.capteursFactory = capteursFactory
     factory.actionneursFactory = actionneursFactory
+    factory.saveFichier = saveFichier
     
     # Socket data    
     reactor.listenTCP(constantes.portServerData, SocketDataGHomeFactory(capteursFactory, actionneursFactory, factory))

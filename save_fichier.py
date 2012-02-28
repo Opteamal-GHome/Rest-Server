@@ -17,8 +17,8 @@ class SaveFichier():
         Ajoute une nouvelle regle dans le fichier
         '''
         
-        # On ouvre le fichier en mode ecriture
-        with open(constantes.nomFichierRules, 'w') as fichier:
+        # On ouvre le fichier en mode ecriture ajout apres
+        with open(constantes.nomFichierRules, 'a') as fichier:
             pick = pickle.Pickler(fichier)
             
             # On ecrit l'objet rule dans le fichier
@@ -33,11 +33,16 @@ class SaveFichier():
         with open(constantes.nomFichierRules, 'r') as fichier:
             depick = pickle.Unpickler(fichier)
             
-            # On ouvre un objet
-            rule = depick.load()
-
-            # Et on le sauvegarde
-            self.ensRules.ajouterRule(rule)
+            try:
+                # On charge toutes les regles jusqu'a EOF
+                while (True):
+                    # On ouvre un objet
+                    rule = depick.load()
+        
+                    # Et on le sauvegarde
+                    self.ensRules.ajouterRule(rule)
+            except EOFError:
+                print 'Fin de fichier'
             
         
     def closeFile(self):
