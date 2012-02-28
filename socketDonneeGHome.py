@@ -36,6 +36,7 @@ class SocketDataGHomeFactory(Factory):
         
         
     def decode(self, msg):
+        print 'Recu de la socket Donnee : ' + str(msg)
         data = json.loads(msg)
         if data["msgType"] == "device_updated":
         
@@ -45,11 +46,15 @@ class SocketDataGHomeFactory(Factory):
                 
                 # Ajout d'un nouveau capteur
                 if capteur == None:
+                    print 'Ajout Nouveau Capteur Socket Donnee'
                     newCapt = Capteur(data["id"], "", data["type"], data["data"])
                     self.capteursFactory.ajouterCapteur(newCapt)
                 # Modification d'un capteur existant
                 else:
+                    print 'Modification Capteur Socket Donnee'
                     self.capteursFactory.modifierCapteur(data["id"], data["data"])
+                    
+                    print self.capteursFactory.getCapteur(data["id"]).data
             
             
             # Si le dispositif est un actionneur
@@ -65,4 +70,4 @@ class SocketDataGHomeFactory(Factory):
                     self.actionneursFactory.modifierActionneur(data["id"], data["data"])
         
             print 'Data : ' + data["data"]        
-            self.ws.changedDevice(data["id"], data["data"])
+            self.ws.changedDevice(data["id"], data["type"], data["data"])

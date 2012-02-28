@@ -10,13 +10,23 @@ class Rule():
         self.actions = []
         self.name=""
         self.priority=""
+        self.error=""
         self.decodeJSONRule(data)
         
         
     def decodeJSONRule(self, msg):
+        '''
+        Check si les champs de la regle sont vides / si ils sont inexistants
+        '''
+        
         print('decode')
+        
+        regleOk = True
     
         # Extraction du nom du message
+        if (msg['ruleName'] == "" or msg['ruleName'] == None):
+            regleOk = False
+            erreur = "nom_regle_vide"
         self.name = msg['ruleName']
     
         # Extraction des conditions      
@@ -27,8 +37,19 @@ class Rule():
             
             else :
                 leftOp = conditionMsg['leftOp']
+                if (leftOp == ""):
+                    regleOk = False
+                    erreur = "capteur_non_present"
+                
                 rightOp = conditionMsg['rightOp']
+                if (rightOp == ""):
+                    regleOk = False
+                    erreur = "valeur_non_present" 
+                              
                 typeC = conditionMsg['type']
+                if (typeC == ""):
+                    regleOk = False
+                    erreur = "operateur_non_present" 
           
                 condition = Condition(leftOp, typeC, rightOp)
                 
@@ -39,8 +60,15 @@ class Rule():
             levier = actionMsg['actuator']
             valeur = actionMsg['value']
             
+            if (levier == ""):
+                regleOk = False
+                erreur = "actionneur_non_present" 
+            
             action = Action(levier,valeur)
             self.actions.append(action)
+        
+        if regleOk == False:
+            self.error = erreur 
                     
     def createJsonRule(self):
         '''
@@ -130,7 +158,7 @@ class Condition():
         self.rightOp = rightOp
         
     def encodeJSON (self):
-        return {'type':self.type, 'leftOp':self.leftOp, 'rightOp':self.rightOp}
+        return {'type':self.type, 'leftOp':'@'+self.leftOp, 'rightOp':self.rightOp}
             
         
 class ConditionDate(Condition):

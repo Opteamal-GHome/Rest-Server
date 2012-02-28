@@ -34,7 +34,7 @@ class ActionneursFactory():
         '''
         trouve = False
         for actionneur in self.actionneurs :
-            if actionneur.id == idA:
+            if str(actionneur.id) == str(idA):
                 trouve = True
                 actionneur.value = value
                 

@@ -14,6 +14,7 @@ from statistique import StatistiqueHTML
 from socketDonneeGHome import *
 from form import *
 from transport import TransportGHome
+from save_fichier import *
 import constantes
 
 import time
@@ -28,6 +29,10 @@ if __name__ == '__main__':
     actionneursFactory = ActionneursFactory()
     ensembleRules = Rules()
     
+    # Sauvegarde des regles
+    saveFichier = SaveFichier(ensembleRules)
+    
+    
     # Serveur WebSockets
     factory = WebSocketFactory("ws://localhost:" + str(constantes.portWebSocket))
     listenWS(factory)
@@ -36,8 +41,6 @@ if __name__ == '__main__':
     factory.capteursFactory = capteursFactory
     factory.actionneursFactory = actionneursFactory
     
-    #ensembleRules = factory.getEnsRules()
-        
     # Socket data    
     reactor.listenTCP(constantes.portServerData, SocketDataGHomeFactory(capteursFactory, actionneursFactory, factory))
         
@@ -49,8 +52,8 @@ if __name__ == '__main__':
     # Initialisation de l'envoi des pages HTML
     root.putChild('', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('capteurs', CapteursHTML(capteursFactory, actionneursFactory, transport))
-    root.putChild('stat', StatistiqueHTML())
-    root.putChild('temperature', StatistiqueHTML())
+    root.putChild('stat', StatistiqueHTML(capteursFactory, factory))
+    root.putChild('temperature', StatistiqueHTML(capteursFactory, factory))
     root.putChild('create_rule', CreateRule(capteursFactory, actionneursFactory, ensembleRules, transport))
     root.putChild('rules', DisplayRules(capteursFactory, actionneursFactory, ensembleRules))
     root.putChild('groups', Groups(capteursFactory, actionneursFactory, ensembleRules))
