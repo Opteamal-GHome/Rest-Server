@@ -104,7 +104,7 @@ class DisplayRules(resource.Resource):
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
         headerHtml = headerHtml.replace("$STYLE$", "core_admin.css")
-        headerHtml = headerHtml.replace("$JS_TO_INCLUDE$", "client_admin_script.js")
+        headerHtml = headerHtml.replace("$JS_TO_INCLUDE$", "client_admin_regle_script.js")
         headerHtml = headerHtml.replace("$IPSERVEUR$", str(ni.ifaddresses(constantes.typeLiaison)[2][0]['addr'])+":" + str(constantes.portServeurWeb))
         headerFile.close()      
         
