@@ -60,15 +60,16 @@ class WebSocketFactory (WebSocketServerFactory):
         if (data["msgType"] == "newRule"):
             # Nouvelle regle donnee par le client ; A envoyer au serveur GHome
             self.msgNewRuleC(data)    
-        elif (data["msgType"] == "supprRule"):
-            # Suppression d'une regle
-            nomRule = data["ruleName"]
-            self.ensembleRules.supprimerRule(nomRule)
+        elif (data["msgType"] == "rule_removed"):
+            nomRule = data["rule"]
+            self.removeOneRule(nomRule)
         elif (data["msgType"] == "rename_device"):
             self.changeNameDevice(data)
         elif (data["msgType"] == "stat"):
             idCapteur = data["idC"]
             self.sendTemperature(idCapteur)
+        elif (data["msgType"] == "priorities"):
+            self.changePriorities(data["rules"])
         
     def changeNameDevice(self, data):
         '''
@@ -80,6 +81,51 @@ class WebSocketFactory (WebSocketServerFactory):
         capteur = self.capteursFactory.getCapteur(capteurId)
         capteur.nom = newName
         print 'Nom du capteur modifie'
+        
+    def changePriorities(self, rules):
+        '''
+        Changement des priorites des regles chez le client. Refactoring des priorites sur le serveur Python. Envoi au Serveur C
+        '''
+        # Change les priorites sur le serveur Python
+        numPriorite = 0
+        for nomRule in rules:
+            self.ensembleRules.modifierPrioriteRule(str(nomRule),numPriorite)
+            numPriorite = numPriorite + 1
+            
+        # Recree le fichier de rules
+        self.saveFichier.removeAllRules()
+        self.saveFichier.writeAllRules()
+        
+        # Envoie les nouvelles priorites au serveur C
+        data = {}
+        data["msgType"] = "changeRulesPriorities"
+        data["rules"] = []
+        for nomRule in rules:
+            data["rules"].append(str(nomRule))
+            
+        jsonMsg = str(data)
+        self.socketG.sendMsg(jsonMsg)
+        
+        
+    def removeOneRule (self, name):
+        ''' 
+        Envoie au serveur C le nom de la regle a supprimer
+        '''
+        
+        # Suppression d'une regle cote python
+        self.ensembleRules.supprimerRule(name)
+        
+        # Envoi de la regle a supprimer au serveur C
+        data = {}
+        data["msgType"] = "removeRule"
+        data["ruleName"] = str(name)
+        
+        jsonMsg = str(data)
+        self.socketG.sendMsg(jsonMsg)
+        
+        # Reecriture du fichier de sauvegarde des regles
+        self.saveFichier.removeAllRules()
+        self.saveFichier.writeAllRules()
             
     
     def msgNewRuleC (self, data):
