@@ -120,11 +120,16 @@ class Rules() :
         Supprimer une regle parmi la liste de regles. La regle supprimee est identifiee par son nom
         '''
         for rule in self.rules:
-            if rule.name == nomRule:
+            if str(rule.name) == str(nomRule):
                 self.rules.remove(rule)
                 
-    #def saveRules(self):
-        
+    def modifierPrioriteRule(self, nomRule, priorite):
+        '''
+        Change la priorite de la regle intitulee nomRule
+        '''
+        for rule in self.rules:
+            if str(rule.name) == str(nomRule):
+                rule.priority = priorite 
         
         
 
