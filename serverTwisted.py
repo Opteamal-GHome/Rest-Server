@@ -50,6 +50,10 @@ if __name__ == '__main__':
     
     factory.socketG = transport
     
+    # Suppression de toutes les regles du serveur C
+    #transport.removeAllRules()
+    
+    
     # Initialisation de l'envoi des pages HTML
     root.putChild('', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('capteurs', CapteursHTML(capteursFactory, actionneursFactory, transport))
@@ -57,7 +61,7 @@ if __name__ == '__main__':
     root.putChild('temperature', StatistiqueHTML(capteursFactory, factory))
     root.putChild('create_rule', CreateRule(capteursFactory, actionneursFactory, ensembleRules, transport))
     root.putChild('rules', DisplayRules(capteursFactory, actionneursFactory, ensembleRules))
-    root.putChild('groups', Groups(capteursFactory, actionneursFactory, ensembleRules))
+    root.putChild('groups', Groups(capteursFactory, actionneursFactory, ensembleRules, transport))
     
     log.startLogging(sys.stdout)
     log.msg('Starting server: %s' %str(datetime.now()))
