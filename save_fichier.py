@@ -1,5 +1,6 @@
 import pickle
 import constantes
+import os
 
 class SaveFichier():
     
@@ -23,6 +24,15 @@ class SaveFichier():
             
             # On ecrit l'objet rule dans le fichier
             pick.dump(rule)
+            
+            
+    def writeAllRules(self):
+        '''
+        Ecrit toutes les regles existantes dans le fichier
+        '''            
+        # On ecrit toutes les regles
+        for rule in self.ensRules.rules:
+            self.writeNouvelleRule(rule)
         
         
     def recreateRules(self):
@@ -43,6 +53,17 @@ class SaveFichier():
                     self.ensRules.ajouterRule(rule)
             except EOFError:
                 print 'Fin de fichier'
+                
+    def removeAllRules(self):
+        '''
+        Supprime toutes les regles contenus dans le fichier --> fichier vide
+        '''
+        # On supprime le fichier
+        os.remove(constantes.nomFichierRules)
+        
+        # On recree le fichier
+        self.file = open(constantes.nomFichierRules, "a")
+        self.file.close()
             
         
     def closeFile(self):
