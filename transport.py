@@ -91,13 +91,29 @@ class TransportGHome():
         msgRcv = self.transport.receiveMsg()
         dataMsg = json.loads(msgRcv)
         
+      
+    def removeAllRules(self):
+        '''
+        Supprime toutes les regles du cote du serveur C
+        '''  
+        data = {}
+        data["msgType"] = "resetRules"
         
+        jsonMsg = str(data)
+        self.sendMsg(jsonMsg)
                 
     def sendRule(self, regle):
         '''
         Envoi d'une regle au serveur C
         '''
         self.transport.sendMsg(regle)
+        
+    def sendMsg(self, msg):
+        '''
+        Envoi d'un message au serveur C
+        Le message msg est au format json
+        '''
+        self.transport.sendMsg(msg)
         
     def receiveAnswer(self):
         '''
