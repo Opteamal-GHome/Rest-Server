@@ -130,11 +130,12 @@ class GroupsHtml(resource.Resource):
     '''
     Affichage des groupes
     ''' 
-    def __init__(self,capteursFactory, actionneursFactory, ensRules, transport):
+    def __init__(self,capteursFactory, actionneursFactory, ensRules, transport, ensGroups):
         self.captFactory = capteursFactory
         self.actionFactory = actionneursFactory 
         self.ensembleRules = ensRules
         self.transport = transport
+        self.ensGroups = ensGroups
         resource.Resource.__init__(self)
         
 
@@ -159,6 +160,7 @@ class GroupsHtml(resource.Resource):
         groupHtml = groupFile.read()
         groupHtml = groupHtml.replace("$LISTECAPTEURS$", createRule.renderListeCapteursExistants())
         groupHtml = groupHtml.replace("$LISTEACTIONNEURS$", createRule.renderListeActionneursExistants())
+        groupHtml = groupHtml.replace("$LISTEGROUPES$", self.renderListeGroupe())
         groupFile.close()
 
         footerFile = open("../ClientPC/footer.html")
@@ -171,6 +173,25 @@ class GroupsHtml(resource.Resource):
     def render_POST(self, request):
         return self.render_GET(request)
     
+    def renderListeGroupe(self):
+        '''
+        Renvoie la liste des groupes
+        '''
+        page = ""
+        
+        print str(len(self.ensGroups.listeGroupe))
+        # On vient ajouter chaque groupe
+        for groupe in self.ensGroups.listeGroupe:
+            page += """<li class="group"><img class="btn_del_grp" src="images/moblin-close2.png" /><img src="images/ring-icon.png" />"""
+            
+            # Ajout du nom du groupe
+            page += str(groupe.nom)
+            
+            # Fermeture de la balise
+            page += """</li>"""
+        
+        print page
+        return page
 
 
 class CreateRule(resource.Resource):
