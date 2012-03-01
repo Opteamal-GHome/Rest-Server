@@ -27,17 +27,21 @@ class SocketDataGHomeFactory(Factory):
     
     protocol = SocketDataGHome
 
-    def __init__(self, factoryCapteurs, factoryActionneurs, form):
+    def __init__(self, factoryCapteurs, factoryActionneurs, ensRules, transport, ws):
         self.port = constantes.portServerData
         self.capteursFactory = factoryCapteurs
         self.actionneursFactory = factoryActionneurs
-        self.ws = form
+        self.ensRules = ensRules
+        self.transport = transport
+        self.ws = ws
         print 'Initialisation du socket Data GHome sur '
         
         
     def decode(self, msg):
         print 'Recu de la socket Donnee : ' + str(msg)
         data = json.loads(msg)
+        
+        # Un dispositif a vu sa valeur changer
         if data["msgType"] == "device_updated":
         
             # Si le dispositif est un capteur
@@ -71,3 +75,11 @@ class SocketDataGHomeFactory(Factory):
         
             print 'Data : ' + data["data"]        
             self.ws.changedDevice(data["id"], data["type"], data["data"])
+            
+            
+        # Demande de toutes les regles par le serveur C
+        elif data["msgType"] == "get_rules":
+            
+            # On doit envoyer toutes les regles au serveur C
+            for rule in self.ensRules.rules:
+                self.transport.sendRule(rule.createJsonRule())
