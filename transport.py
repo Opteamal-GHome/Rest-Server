@@ -91,6 +91,31 @@ class TransportGHome():
         msgRcv = self.transport.receiveMsg()
         dataMsg = json.loads(msgRcv)
         
+        
+    def reinitialisationRegles(self, ensembleRules, saveFichier):
+        '''
+        Reinitialisation des regles au niveau du serveur C
+        Suppression de toutes les regles +
+        Envoi des regles au fur et a mesure
+        '''
+        self.removeAllRules()
+        for rule in ensembleRules.rules:
+            # Envoi Regle au serveur C
+            self.sendRule(rule.createJsonRule())
+            
+            # Recuperation de la reponse
+            reponseJson = self.receiveAnswer()
+            answer = json.loads(reponseJson)
+            if answer["msgType"] == "R_newRule":
+                if answer["status"] == "REFUSED":
+                    
+                    # Si le serveur refuse la regle, on la supprime sur le serveur Python
+                    ensembleRules.supprimerRule(rule.name)
+                    
+                    # Reecriture du fichier de sauvegarde des regles
+                    saveFichier.removeAllRules()
+                    saveFichier.writeAllRules()
+        
       
     def removeAllRules(self):
         '''
