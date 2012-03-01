@@ -31,7 +31,6 @@ class SocketGHome :
             print 'Connection NOK'
             
         # On envoie la taille du message en octets dans un premier temps
-        print str(len(message))
         self.connexionServer.send(struct.pack('!i',len(message)))
         
         # On envoie le message ensuite    
