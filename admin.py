@@ -228,7 +228,7 @@ class CreateRule(resource.Resource):
         page = ""
         for capteur in self.captFactory.capteurs:
             # Nom du capteur
-            page +=  """<li id=\"""" + str(capteur.id) +  """\" class="periph">"""
+            page +=  """<li id=\"""" + str(capteur.id) +  """\"  alt=\"""" + str(capteur.type) + """\"  class="periph">"""
             
             # Image du capteur
             if capteur.type == 'T':
@@ -259,7 +259,7 @@ class CreateRule(resource.Resource):
         page = ""
         for actionneur in self.actionFactory.actionneurs:
             # Nom de l'actionneur
-            page +=  """<li id=\"""" + str(actionneur.id) +  """\" class="periph">"""
+            page +=  """<li id=\"""" + str(actionneur.id) +  """\"  alt=\"""" + str(actionneur.type) + """\"  class="periph">"""
             
             # Image de l'actionneur
             page += """<img class="img_periph" src="images/C315b.png"> """
