@@ -143,14 +143,7 @@ class WebSocketFactory (WebSocketServerFactory):
             rule.priority = "1"
             rule.name = rule.name
             jsonMsg = rule.createJsonRule()
-            
-            jsonMsg = jsonMsg.replace('"type": u', '"type": ');
-            jsonMsg = jsonMsg.replace('"rightOp": u', '"rightOp": ');
-            jsonMsg = jsonMsg.replace('"leftOp": u', '"leftOp": ');
-            jsonMsg = jsonMsg.replace('"actuator": u', '"actuator": ');
-            jsonMsg = jsonMsg.replace('"value": u', '"value": ');
-            jsonMsg = jsonMsg.replace('"ruleName": u', '"ruleName": ');
-            
+                        
             print jsonMsg
             
             # Envoi de la regle au serveur C
