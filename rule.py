@@ -77,7 +77,7 @@ class Rule():
         # Creation de la structure de depart du message JSON
         data = {}
         data["msgType"] = "newRule"
-        data["priority"] = self.priority
+        data["priority"] = str(self.priority)
         
         data["rule"] = {}
         data["rule"]["ruleName"] = self.name
@@ -95,7 +95,12 @@ class Rule():
         # Remplacement des ' par des "
         jsonRule = str(data)
         jsonRule = jsonRule.replace('\'','\"')
-        
+        jsonRule = jsonRule.replace('"type": u', '"type": ');
+        jsonRule = jsonRule.replace('"rightOp": u', '"rightOp": ');
+        jsonRule = jsonRule.replace('"leftOp": u', '"leftOp": ');
+        jsonRule = jsonRule.replace('"actuator": u', '"actuator": ');
+        jsonRule = jsonRule.replace('"value": u', '"value": ');
+        jsonRule = jsonRule.replace('"ruleName": u', '"ruleName": ');
             
         # Transformation au format JSON et retour
         return jsonRule          
@@ -120,11 +125,16 @@ class Rules() :
         Supprimer une regle parmi la liste de regles. La regle supprimee est identifiee par son nom
         '''
         for rule in self.rules:
-            if rule.name == nomRule:
+            if str(rule.name) == str(nomRule):
                 self.rules.remove(rule)
                 
-    #def saveRules(self):
-        
+    def modifierPrioriteRule(self, nomRule, priorite):
+        '''
+        Change la priorite de la regle intitulee nomRule
+        '''
+        for rule in self.rules:
+            if str(rule.name) == str(nomRule):
+                rule.priority = priorite 
         
         
 

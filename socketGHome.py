@@ -31,7 +31,6 @@ class SocketGHome :
             print 'Connection NOK'
             
         # On envoie la taille du message en octets dans un premier temps
-        print str(len(message))
         self.connexionServer.send(struct.pack('!i',len(message)))
         
         # On envoie le message ensuite    
@@ -44,7 +43,7 @@ class SocketGHome :
         '''
         Methode de reception d'un message
         '''
-        msg_recu = self.connexionServer.recv(1024)
+        msg_recu = self.connexionServer.recv(2048)
         return msg_recu 
     
     def closeServer (self):

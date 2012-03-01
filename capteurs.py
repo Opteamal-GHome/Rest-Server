@@ -31,7 +31,8 @@ class CapteursHTML(resource.Resource):
         
         capteurFile = open("../ClientPC/core_capteurs.html")
         capteurHtml = capteurFile.read()
-        capteurHtml = capteurHtml.replace("$LISTECAPTEURS$", self.renderCorpsHTML())
+        capteurHtml = capteurHtml.replace("$LISTECAPTEURS$", self.renderCorpsCapteursHTML())
+        capteurHtml = capteurHtml.replace("$LISTEACTIONNEURS$", self.renderCorpsActionneurHTML())
         capteurFile.close()
 
         footerFile = open("../ClientPC/footer.html")
@@ -43,7 +44,7 @@ class CapteursHTML(resource.Resource):
     def render_POST(self, request):
         return self.render_GET(request)
 
-    def renderCorpsHTML (self):
+    def renderCorpsCapteursHTML (self):
         '''
         Modification de la page corps_capteurs pour ajouter les capteurs dans les box
         '''
@@ -57,14 +58,38 @@ class CapteursHTML(resource.Resource):
             # Image du capteur
             if capteur.type == 'T':
                 page += """<img class="img_capteur" src="images/Thermometer_1_24282.png"> """
-            elif capteur.type == 'P':
+            elif capteur.type == 'L':
                 page += """<img class="img_capteur" src="images/bulb.png">"""
+            else:
+                page += """<img class="img_capteur" alt=\"""" + capteur.type + """" src="images/inexistant.png">"""
                 
             # Valeur Data du capteur
-            print capteur.data[-1]
             page += """<div class="val_capteur">""" + str(capteur.data[-1]) + """</div>"""              
             page += """</div>"""
 
+
+        return page
+    
+    def renderCorpsActionneurHTML (self):
+        '''
+        Modification de la page corps_capteurs pour ajouter les actionneurs dans les box
+        '''
+        page = ""
+        for actionneur in self.factoryActionneurs.actionneurs:
+            print 'Actionneur : ' + str(actionneur.id)
+            # Nom de l'actionneur
+            page +=  """<div id=\"""" + str(actionneur.id) + """\" class="capteur">
+            <input type="text" class="nom_capteur" value=\"""" + str(actionneur.nom) + """"/>"""
+            
+            # Image de l'actionneur
+            page += """<img class="img_capteur" src="images/C315b.png"> """
+                
+            # Valeur Data de l'actionneur
+            if (actionneur.value == "0"):
+                page += """<div class="val_capteur">""" + "Eteint" + """</div>"""       
+            elif (actionneur.value == "1"):
+                page += """<div class="val_capteur">""" + "Allume" + """</div>"""         
+            page += """</div>"""
 
         return page
 

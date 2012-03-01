@@ -31,7 +31,7 @@ if __name__ == '__main__':
     
     # Sauvegarde des regles
     saveFichier = SaveFichier(ensembleRules)
-    
+    saveFichier.recreateRules()
     
     # Serveur WebSockets
     factory = WebSocketFactory("ws://localhost:" + str(constantes.portWebSocket))
@@ -40,14 +40,19 @@ if __name__ == '__main__':
     factory.ensembleRules = ensembleRules
     factory.capteursFactory = capteursFactory
     factory.actionneursFactory = actionneursFactory
-    
-    # Socket data    
-    reactor.listenTCP(constantes.portServerData, SocketDataGHomeFactory(capteursFactory, actionneursFactory, factory))
-        
+    factory.saveFichier = saveFichier
+         
     transport = TransportGHome()
     #transport = 2
     
+    # Socket data    
+    reactor.listenTCP(constantes.portServerData, SocketDataGHomeFactory(capteursFactory, actionneursFactory, ensembleRules, transport, factory))
+
+    # Acces a la socket GHome pour les websockets
     factory.socketG = transport
+    
+    # Suppression de toutes les regles du serveur C et reenvoi des regles
+    transport.reinitialisationRegles(ensembleRules, saveFichier)
     
     # Initialisation de l'envoi des pages HTML
     root.putChild('', CapteursHTML(capteursFactory, actionneursFactory, transport))
@@ -56,7 +61,7 @@ if __name__ == '__main__':
     root.putChild('temperature', StatistiqueHTML(capteursFactory, factory))
     root.putChild('create_rule', CreateRule(capteursFactory, actionneursFactory, ensembleRules, transport))
     root.putChild('rules', DisplayRules(capteursFactory, actionneursFactory, ensembleRules))
-    root.putChild('groups', Groups(capteursFactory, actionneursFactory, ensembleRules))
+    root.putChild('groups', Groups(capteursFactory, actionneursFactory, ensembleRules, transport))
     
     log.startLogging(sys.stdout)
     log.msg('Starting server: %s' %str(datetime.now()))

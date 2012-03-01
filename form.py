@@ -60,26 +60,93 @@ class WebSocketFactory (WebSocketServerFactory):
         if (data["msgType"] == "newRule"):
             # Nouvelle regle donnee par le client ; A envoyer au serveur GHome
             self.msgNewRuleC(data)    
-        elif (data["msgType"] == "supprRule"):
-            # Suppression d'une regle
-            nomRule = data["ruleName"]
-            self.ensembleRules.supprimerRule(nomRule)
+        elif (data["msgType"] == "rule_removed"):
+            nomRule = data["rule"]
+            self.removeOneRule(nomRule)
         elif (data["msgType"] == "rename_device"):
             self.changeNameDevice(data)
         elif (data["msgType"] == "stat"):
             idCapteur = data["idC"]
             self.sendTemperature(idCapteur)
+        elif (data["msgType"] == "priorities"):
+            self.changePriorities(data["rules"])
+        elif (data["msgType"] == "meteo"):
+            self.changeMeteo(data["codePostal"])
+            
+    def changeMeteo(self,codePostal):
+        ''' 
+        Changement de la meteo 
+        '''
+        data = {}
+        data["msgType"] = "meteo"
+        data["codePostal"] = str(codePostal)
+        jsonMsg = str(data)
+        
+        self.socketG.sendMsg(jsonMsg)
+        
         
     def changeNameDevice(self, data):
         '''
         Change le nom d'un device
         '''
-        capteurId = data["id"]
+        idRecupere = data["id"]
         newName = data["name"]
         
-        capteur = self.capteursFactory.getCapteur(capteurId)
-        capteur.nom = newName
-        print 'Nom du capteur modifie'
+        # On recupere le capteur correspondant
+        device = self.capteursFactory.getCapteur(idRecupere)
+        
+        # Si la recuperation a echoue, c'est qu'on essaye de recuperer un actionneur
+        if (device == None):
+            device = self.actionneursFactory.getActionneur(idRecupere)
+        
+        # On change ensuite le nom
+        device.nom = newName
+        print 'Nom du device modifie'
+        
+    def changePriorities(self, rules):
+        '''
+        Changement des priorites des regles chez le client. Refactoring des priorites sur le serveur Python. Envoi au Serveur C
+        '''
+        # Change les priorites sur le serveur Python
+        numPriorite = 0
+        for nomRule in rules:
+            self.ensembleRules.modifierPrioriteRule(str(nomRule),numPriorite)
+            numPriorite = numPriorite + 1
+            
+        # Recree le fichier de rules
+        self.saveFichier.removeAllRules()
+        self.saveFichier.writeAllRules()
+        
+        # Envoie les nouvelles priorites au serveur C
+        data = {}
+        data["msgType"] = "changeRulesPriorities"
+        data["rules"] = []
+        for nomRule in rules:
+            data["rules"].append(str(nomRule))
+            
+        jsonMsg = str(data)
+        self.socketG.sendMsg(jsonMsg)
+        
+        
+    def removeOneRule (self, name):
+        ''' 
+        Envoie au serveur C le nom de la regle a supprimer
+        '''
+        
+        # Suppression d'une regle cote python
+        self.ensembleRules.supprimerRule(name)
+        
+        # Envoi de la regle a supprimer au serveur C
+        data = {}
+        data["msgType"] = "removeRule"
+        data["ruleName"] = str(name)
+        
+        jsonMsg = str(data)
+        self.socketG.sendMsg(jsonMsg)
+        
+        # Reecriture du fichier de sauvegarde des regles
+        self.saveFichier.removeAllRules()
+        self.saveFichier.writeAllRules()
             
     
     def msgNewRuleC (self, data):
@@ -97,14 +164,7 @@ class WebSocketFactory (WebSocketServerFactory):
             rule.priority = "1"
             rule.name = rule.name
             jsonMsg = rule.createJsonRule()
-            
-            jsonMsg = jsonMsg.replace('"type": u', '"type": ');
-            jsonMsg = jsonMsg.replace('"rightOp": u', '"rightOp": ');
-            jsonMsg = jsonMsg.replace('"leftOp": u', '"leftOp": ');
-            jsonMsg = jsonMsg.replace('"actuator": u', '"actuator": ');
-            jsonMsg = jsonMsg.replace('"value": u', '"value": ');
-            jsonMsg = jsonMsg.replace('"ruleName": u', '"ruleName": ');
-            
+                        
             print jsonMsg
             
             # Envoi de la regle au serveur C
@@ -117,6 +177,9 @@ class WebSocketFactory (WebSocketServerFactory):
             if answer["msgType"] == "R_newRule":
                 if answer["status"] == "ACCEPTED":
                     # La regle a ete acceptee par le serveur
+                    # On l'ajoute dans le fichier de sauvegarde des regles
+                    self.saveFichier.writeNouvelleRule(rule)
+                    
                     self.ensembleRules.ajouterRule(rule)
                     self.msgAnswer(answer["status"], "")
                 else:
