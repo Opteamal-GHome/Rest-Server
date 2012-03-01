@@ -19,7 +19,7 @@ class CapteursHTML(resource.Resource):
         '''
         Methode de reponse pour localhost:8000/capteurs/
         '''
-        self.transport.getAllDevices(self.factoryCapteurs, self.factoryActionneurs)
+        #self.transport.getAllDevices(self.factoryCapteurs, self.factoryActionneurs)
 
         
         headerFile = open("../ClientPC/header.html")
@@ -115,11 +115,11 @@ class CapteursFactory():
     
     def __init__(self):
         ''' Methode Initialisation de la classe CapteursFactory '''
-        #capteur1 = Capteur(12, 'Salon', 'T', 15)
-        #capteur2 = Capteur(2, 'Chambre', 'P', 35)
-        #capteur3 = Capteur(3, 'Salle de bain', 'T', 20)
-        #self.capteurs=[capteur1, capteur2, capteur3]
-        self.capteurs = []
+        capteur1 = Capteur(12, 'Salon', 'T', 15)
+        capteur2 = Capteur(2, 'Chambre', 'P', 35)
+        capteur3 = Capteur(3, 'Salle de bain', 'T', 20)
+        self.capteurs=[capteur1, capteur2, capteur3]
+        #self.capteurs = []
         
         
     def getCapteur (self, idC):
@@ -137,13 +137,13 @@ class CapteursFactory():
         Ajout d'un capteur
         '''        
         if capteur.id not in self.getIDCapteurs():
-			# On verifie si le capteur est du type meteo
-			if str(capteur.type) == "U":
-				capteur.nom = "Meteo"
-			elif str(capteur.type) == "V":
-				capteur.nom = "Humidite"
-		
-			self.capteurs.append(capteur)
+            # On verifie si le capteur est du type meteo
+            if str(capteur.type) == "U":
+                capteur.nom = "Meteo"
+            elif str(capteur.type) == "V":
+                capteur.nom = "Humidite"
+
+            self.capteurs.append(capteur)
         else:
             self.modifierCapteur(capteur.id, capteur.data)
         

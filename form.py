@@ -1,4 +1,5 @@
 from rule import *
+from group import *
 from transport import TransportGHome
 import json
 from twisted.internet import task
@@ -72,6 +73,35 @@ class WebSocketFactory (WebSocketServerFactory):
             self.changePriorities(data["rules"])
         elif (data["msgType"] == "meteo"):
             self.changeMeteo(data["codePostal"])
+        elif (data["msgType"] == "new_group"):
+            self.createNewGroup(data["name"], data["type"], data["devices"])
+        elif (data["msgType"] == "remove_group"):
+            self.deleteGroup(data["name"])
+            
+    def createNewGroup(self, nom, typeG, devices):
+        '''
+        Nouveau groupe detecte
+        '''
+        # Remplissage newGroup
+        newGroup = Group()
+        newGroup.nom = nom
+        newGroup.typeGroupe = typeG
+        for device in devices:
+            newGroup.ajouterPeriph(device)
+            
+        # Ajout du groupe dans l'ensemble des groupes existants
+        self.ensembleGroupes.ajouterGroupe(newGroup)
+        print 'Groupe ' + nom + ' ajoute'
+        
+    def deleteGroup(self, nomGroupe):
+        '''
+        Supprime un groupe dont le nom est passe en parametre
+        '''
+        
+        trouve = self.ensembleGroupes.removeGroupe(nomGroupe)
+        if trouve == True:
+            print 'Groupe ' + nomGroupe + ' supprime'
+        
             
     def changeMeteo(self,codePostal):
         ''' 

@@ -7,7 +7,7 @@ portServerData = 2000
 
 portServeurWeb = 8080
 
-typeLiaison = "wlan0"
+typeLiaison = "eth0"
 
 portWebSocket = 8081
 

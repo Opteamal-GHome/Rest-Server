@@ -5,10 +5,10 @@ class ActionneursFactory():
     
     def __init__(self):
         ''' Methode Initialisation de la classe '''
-        #actionneur1 = Actionneur(10, 'Salon')
-        #actionneur2 = Actionneur(2, 'Chambre')
-        #self.actionneurs=[actionneur1, actionneur2]
-        self.actionneurs = []
+        actionneur1 = Actionneur(10, 'Salon')
+        actionneur2 = Actionneur(2, 'Chambre')
+        self.actionneurs=[actionneur1, actionneur2]
+        #self.actionneurs = []
         
     def getActionneur (self, idA):
         ''' 
