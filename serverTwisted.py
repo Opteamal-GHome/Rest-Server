@@ -41,18 +41,18 @@ if __name__ == '__main__':
     factory.capteursFactory = capteursFactory
     factory.actionneursFactory = actionneursFactory
     factory.saveFichier = saveFichier
-    
-    # Socket data    
-    reactor.listenTCP(constantes.portServerData, SocketDataGHomeFactory(capteursFactory, actionneursFactory, factory))
-        
+         
     transport = TransportGHome()
     #transport = 2
     
+    # Socket data    
+    reactor.listenTCP(constantes.portServerData, SocketDataGHomeFactory(capteursFactory, actionneursFactory, ensembleRules, transport, factory))
+
+    # Acces a la socket GHome pour les websockets
     factory.socketG = transport
     
-    # Suppression de toutes les regles du serveur C
-    #transport.removeAllRules()
-    
+    # Suppression de toutes les regles du serveur C et reenvoi des regles
+    transport.reinitialisationRegles(ensembleRules, saveFichier)
     
     # Initialisation de l'envoi des pages HTML
     root.putChild('', CapteursHTML(capteursFactory, actionneursFactory, transport))
