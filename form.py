@@ -77,6 +77,9 @@ class WebSocketFactory (WebSocketServerFactory):
             self.createNewGroup(data["name"], data["type"], data["devices"])
         elif (data["msgType"] == "remove_group"):
             self.deleteGroup(data["name"])
+        elif (data["msgType"] == "ask_stat"):
+            self.sendStat(data["id"])
+                    
             
     def createNewGroup(self, nom, typeG, devices):
         '''
@@ -244,16 +247,21 @@ class WebSocketFactory (WebSocketServerFactory):
         self.broadcast(data)
         
         
-    def sendTemperature(self, idC):
+    def sendStat(self, idDispositif):
+        '''
+        Envoie les stats de l'idDispositif en passant par les websockets
+        '''
+        
+        # On cherche le capteur avec l'idDispositif
+        capteur = self.capteursFactory.getCapteur(idDispositif)
+        
         data = {}
         data["msgType"] = "tabStat"
-        data["typeStat"] = "T"
+        data["type"] = capteur.type
         data["data"] = []
         
-        # On va chercher le capteur concerne par la temperature
-        capteur = self.capteursFactory.getCapteur(idC)
-        for donnee in capteur.data:
-            data["data"].append(donnee)
+        for valeur in capteur.data:
+            data["data"].append(str(valeur))
             
         self.broadcast(data)
         

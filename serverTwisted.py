@@ -11,7 +11,7 @@ from actionneurs import ActionneursFactory
 from capteurs import CapteursHTML, CapteursFactory
 from admin import *
 from group import GroupFactory
-from statistique import StatistiqueHTML
+from statistique import *
 from socketDonneeGHome import *
 from form import *
 from transport import TransportGHome
@@ -45,8 +45,8 @@ if __name__ == '__main__':
     factory.saveFichier = saveFichier
     factory.ensembleGroupes = ensembleGroupes
          
-    #transport = TransportGHome()
-    transport = 2
+    transport = TransportGHome()
+    #transport = 2
     
     # Socket data    
     reactor.listenTCP(constantes.portServerData, SocketDataGHomeFactory(capteursFactory, actionneursFactory, ensembleRules, transport, factory))
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     root.putChild('', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('capteurs', CapteursHTML(capteursFactory, actionneursFactory, transport))
     root.putChild('stat', StatistiqueHTML(capteursFactory, factory))
-    root.putChild('temperature', StatistiqueHTML(capteursFactory, factory))
+    root.putChild('temperature', StatistiqueTemperatureHTML(capteursFactory))
     root.putChild('create_rule', CreateRule(capteursFactory, actionneursFactory, ensembleRules, transport))
     root.putChild('rules', DisplayRules(capteursFactory, actionneursFactory, ensembleRules))
     root.putChild('groups', GroupsHtml(capteursFactory, actionneursFactory, ensembleRules, transport, ensembleGroupes))

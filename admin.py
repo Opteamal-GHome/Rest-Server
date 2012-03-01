@@ -144,7 +144,7 @@ class GroupsHtml(resource.Resource):
         Creation de la page des groupes
         '''
         
-        #self.transport.getAllDevices(self.captFactory, self.actionFactory)
+        self.transport.getAllDevices(self.captFactory, self.actionFactory)
         
         # On reutilise des methodes qui affiche des box de la page de creation des regles
         createRule = CreateRule(self.captFactory, self.actionFactory, self.ensembleRules, self.transport)
@@ -212,7 +212,7 @@ class CreateRule(resource.Resource):
         Creation de la page admin - RuleCreation 
         /admin
         '''
-        #self.transport.getAllDevices(self.captFactory, self.actionFactory)
+        self.transport.getAllDevices(self.captFactory, self.actionFactory)
         
         headerFile = open("../ClientPC/header.html")
         headerHtml = headerFile.read()
